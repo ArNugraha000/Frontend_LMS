@@ -1,0 +1,587 @@
+<div class="row">
+  <!-- LEFT BUTTON -->
+  <div class="col-lg-4 col-md-6 col-sm-6">
+    <div class="card card-stats clickable-card" (click)="onLeftClick()">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-5 col-md-4">
+            <div class="icon-big text-center icon-primary">
+              <i class="nc-icon nc-hat-3 text-primary"></i>
+            </div>
+          </div>
+          <div class="col-7 col-md-8">
+            <div class="numbers">
+              <p class="card-category">Kursus, Saya</p>
+              <p class="card-title">Kursus</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <hr />
+        <div class="stats"><i class="fa fa-bars"></i>Menu</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MIDDLE BUTTON -->
+  <div class="col-lg-4 col-md-6 col-sm-6">
+    <div class="card card-stats clickable-card" (click)="onMiddleClick()">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-5 col-md-4">
+            <div class="icon-big text-center icon-success">
+              <i class="nc-icon nc-single-02 text-success"></i>
+            </div>
+          </div>
+          <div class="col-7 col-md-8">
+            <div class="numbers">
+              <p class="card-category">Profil, Saya</p>
+              <p class="card-title">Profil</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <hr />
+        <div class="stats"><i class="fa fa-bars"></i> Menu</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT INFO -->
+  <div class="col-lg-4 col-md-12 col-sm-12">
+    <div class="card card-stats">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-5 col-md-4">
+            <div class="icon-big text-center icon-warning">
+              <i class="nc-icon nc-chart-bar-32 text-warning"></i>
+            </div>
+          </div>
+          <div class="col-7 col-md-8">
+            <div class="numbers">
+              <p class="card-category">Total Kursus</p>
+              <p class="card-title">1</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <hr />
+        <div class="stats"><i class="fa fa-refresh"></i> Update otomatis</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="course-container">
+  <h4 class="title">Kursus yang Sedang Anda Jalani</h4>
+  <div class="timeline">
+    <!-- Hari -->
+    <div class="day" *ngFor="let day of days; let i = index">
+      <div class="day-label">Hari ke {{ i + 1 }}</div>
+      <div class="day-circle">
+        <i class="fa fa-cloud"></i>
+      </div>
+    </div>
+
+    <!-- Garis -->
+    <div class="line"></div>
+
+    <!-- Materi -->
+    <div class="materi-wrapper">
+      <div class="materi" *ngFor="let m of materi; let i = index">
+        <div class="materi-circle">
+          <i class="fa fa-book"></i>
+        </div>
+        <div class="materi-label">Materi {{ i + 1 }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= LIST KURSUS ================= -->
+<div class="course-list-card">
+  <!-- SEARCH -->
+  <div class="search-box">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Cari kursus..."
+      [(ngModel)]="searchText"
+      (input)="onSearch()"
+    />
+  </div>
+
+  <div class="training-container">
+    <div class="list-wrapper">
+      <div class="training-item" *ngFor="let item of pagedData">
+        <!-- LEFT IMAGE -->
+        <div class="training-img">
+          <img [src]="item.gambar" alt="training" />
+        </div>
+
+        <!-- MIDDLE INFO -->
+        <div class="training-info">
+          <div class="top-row">
+            <div class="training-title">
+              {{ item.judul }}
+            </div>
+            <span class="status-badge" [class.selesai]="item.progress === 100">
+              {{ item.status }}
+            </span>
+          </div>
+
+          <div class="bottom-row">
+            <div class="tanggal">Waktu Mulai : {{ item.tanggalMulai }}</div>
+            <div class="progress training-progress">
+              <div class="progress-bar" [style.width.%]="item.progress"></div>
+            </div>
+            <!-- BUTTON AKSI DI BAWAH PROGRESS -->
+            <div class="training-action">
+              <button
+                *ngIf="item.progress < 100"
+                class="btn btn-primary btn-sm"
+                (click)="isiKehadiran(item)"
+              >
+                Mengisi Kehadiran
+              </button>
+
+              <button
+                *ngIf="item.progress === 100"
+                class="btn btn-secondary btn-sm"
+                (click)="lihatRiwayat(item)"
+              >
+                Riwayat
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- PAGINATION -->
+
+      <div class="pagination-box">
+        <span class="page-info">
+          Menampilkan {{ pagedData.length }} dari {{ filteredData.length }} item
+          | Hal {{ currentPage }} /
+          {{ totalPages }}
+        </span>
+        <div class="pagination-buttons">
+          <button
+            class="btn btn-sm btn-secondary"
+            (click)="prevPage()"
+            [disabled]="currentPage === 1"
+          >
+            Prev
+          </button>
+          <button
+            class="btn btn-sm btn-primary"
+            (click)="nextPage()"
+            [disabled]="currentPage === totalPages"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ===== CONTAINER ===== */
+  .pagination-box {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* tombol di kanan */
+    gap: 15px; /* jarak antar elemen */
+    padding: 10px 20px; /* padding kiri/kanan */
+    font-size: 13px;
+    color: #555;
+  }
+  .training-container {
+    margin-top: 20px;
+  }
+
+  .list-wrapper {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #e6e6e6;
+    overflow: hidden;
+
+    /* tinggi minimum untuk menampung 4 item */
+    min-height: calc((170px + 1px) * 4); /* 110px tinggi item + 1px border */
+  }
+
+  /* ===== ITEM ===== */
+  .training-item {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 18px 22px;
+    min-height: 110px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .training-item:last-child {
+    border-bottom: none;
+  }
+
+  /* ===== IMAGE ===== */
+  .training-img img {
+    width: 200px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  /* ===== INFO ===== */
+  .training-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .training-title {
+    font-weight: 600;
+    font-size: 15px;
+    color: #222;
+  }
+
+  /* ===== STATUS ===== */
+  .status-badge {
+    display: inline-block;
+    background: #2ecc71;
+    color: white;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    width: fit-content;
+  }
+
+  .status-badge.selesai {
+    background: #27ae60;
+  }
+
+  /* ===== PROGRESS ===== */
+  .training-progress {
+    height: 6px;
+    width: 180px;
+  }
+
+  /* ===== DATE ===== */
+  .tanggal {
+    font-size: 12px;
+    color: #666;
+  }
+
+  /* ===== ACTION ===== */
+  .training-action {
+    width: 170px;
+    text-align: right;
+  }
+
+  .course-container {
+    padding: 20px;
+    text-align: center;
+  }
+
+  .title {
+    color: #d40000;
+    font-weight: bold;
+    margin-bottom: 40px;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    position: relative;
+  }
+
+  /* garis utama */
+  .line {
+    position: absolute;
+    top: 90px;
+    left: 5%;
+    right: 5%;
+    height: 4px;
+    background: #ddd;
+    z-index: 1;
+  }
+
+  /* hari */
+  .day {
+    display: inline-block;
+    width: 16%;
+    position: relative;
+    z-index: 2;
+  }
+
+  .day-circle {
+    width: 45px;
+    height: 45px;
+    background: #a8cbe6;
+    border-radius: 50%;
+    line-height: 45px;
+    margin: 5px auto;
+    color: white;
+  }
+
+  .day-label {
+    color: #888;
+    font-size: 14px;
+  }
+
+  /* materi */
+  .materi-wrapper {
+    margin-top: 80px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5%;
+  }
+
+  .materi {
+    text-align: center;
+  }
+
+  .materi-circle {
+    width: 45px;
+    height: 45px;
+    background: #d40000;
+    border-radius: 50%;
+    line-height: 45px;
+    color: white;
+    margin: auto;
+  }
+
+  .materi-label {
+    margin-top: 6px;
+    color: #888;
+  }
+
+  .materi-circle {
+    position: relative;
+    z-index: 2;
+  }
+
+  .materi-circle::before {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 40px; /* samakan dengan atas */
+    background: #e0e0e0;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 100%; /* naik ke garis tengah */
+  }
+
+  .day-circle {
+    position: relative;
+    z-index: 2;
+  }
+
+  .day-circle::after {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 40px; /* sesuaikan jarak */
+    background: #e0e0e0;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 100%; /* mulai dari bawah lingkaran */
+  }
+  .materi-circle {
+    position: relative;
+  }
+
+  .materi-circle::before {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 30px;
+    background: #e0e0e0;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -30px; /* dari garis utama ke materi */
+    z-index: 0;
+  }
+
+  .timeline {
+    position: relative;
+    padding: 80px 20px;
+  }
+
+  .line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #e0e0e0;
+    transform: translateY(-50%);
+    z-index: 1;
+  }
+</style>
+
+<!-- <div class="row">
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-stats">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-5 col-md-4">
+            <div class="icon-big text-center icon-warning">
+              <i class="nc-icon nc-globe text-warning"></i>
+            </div>
+          </div>
+          <div class="col-7 col-md-8">
+            <div class="numbers">
+              <p class="card-category">Capacity</p>
+              <p class="card-title">150GB</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <hr />
+        <div class="stats"><i class="fa fa-refresh"></i> Update Now</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-stats">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-5 col-md-4">
+            <div class="icon-big text-center icon-warning">
+              <i class="nc-icon nc-money-coins text-success"></i>
+            </div>
+          </div>
+          <div class="col-7 col-md-8">
+            <div class="numbers">
+              <p class="card-category">Revenue</p>
+              <p class="card-title">$ 1,345</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <hr />
+        <div class="stats"><i class="fa fa-calendar-o"></i> Last day</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-stats">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-5 col-md-4">
+            <div class="icon-big text-center icon-warning">
+              <i class="nc-icon nc-vector text-danger"></i>
+            </div>
+          </div>
+          <div class="col-7 col-md-8">
+            <div class="numbers">
+              <p class="card-category">Errors</p>
+              <p class="card-title">23</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <hr />
+        <div class="stats"><i class="fa fa-clock-o"></i> In the last hour</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-6 col-sm-6">
+    <div class="card card-stats">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-5 col-md-4">
+            <div class="icon-big text-center icon-warning">
+              <i class="nc-icon nc-favourite-28 text-primary"></i>
+            </div>
+          </div>
+          <div class="col-7 col-md-8">
+            <div class="numbers">
+              <p class="card-category">Followers</p>
+              <p class="card-title">+45K</p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <hr />
+        <div class="stats"><i class="fa fa-refresh"></i> Update now</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">Users Behavior</h5>
+        <p class="card-category">24 Hours performance</p>
+      </div>
+      <div class="card-body">
+        <canvas id="chartHours" width="400" height="100"></canvas>
+      </div>
+      <div class="card-footer">
+        <hr />
+        <div class="stats">
+          <i class="fa fa-history"></i> Updated 3 minutes ago
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">Email Statistics</h5>
+        <p class="card-category">Last Campaign Performance</p>
+      </div>
+      <div class="card-body">
+        <canvas id="chartEmail"></canvas>
+      </div>
+      <div class="card-footer">
+        <div class="legend">
+          <i class="fa fa-circle text-primary"></i> Opened
+          <i class="fa fa-circle text-warning"></i> Read
+          <i class="fa fa-circle text-danger"></i> Deleted
+          <i class="fa fa-circle text-gray"></i> Unopened
+        </div>
+        <hr />
+        <div class="stats">
+          <i class="fa fa-calendar"></i> Number of emails sent
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card card-chart">
+      <div class="card-header">
+        <h5 class="card-title">NASDAQ: AAPL</h5>
+        <p class="card-category">Line Chart with Points</p>
+      </div>
+      <div class="card-body">
+        <canvas id="speedChart" width="400" height="100"></canvas>
+      </div>
+      <div class="card-footer">
+        <div class="chart-legend">
+          <i class="fa fa-circle text-info"></i> Tesla Model S
+          <i class="fa fa-circle text-warning"></i> BMW 5 Series
+        </div>
+        <hr />
+        <div class="card-stats">
+          <i class="fa fa-check"></i> Data information certified
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->

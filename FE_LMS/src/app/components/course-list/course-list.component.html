@@ -1,0 +1,67 @@
+<!-- course-list.component.html -->
+
+<div class="course-list-container">
+  <!-- Search Box -->
+  <input
+    type="text"
+    placeholder="Cari kursus..."
+    [(ngModel)]="searchText"
+    (input)="onSearch()"
+    class="form-control mb-3"
+  />
+
+  <!-- Info Jumlah Data -->
+  <p>Menampilkan {{ pagedData.length }} dari {{ filteredData.length }} item</p>
+
+  <!-- Tabel Data -->
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Nama Kursus</th>
+        <th>Jenis</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of pagedData; let i = index">
+        <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+        <td>{{ item.krs_nama }}</td>
+        <td>{{ item.krs_jenis }}</td>
+        <td>
+          <button
+            class="btn btn-primary btn-sm me-2"
+            (click)="isiKehadiran(item)"
+          >
+            Kehadiran
+          </button>
+          <button class="btn btn-secondary btn-sm" (click)="lihatRiwayat(item)">
+            Riwayat
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="pagedData.length === 0">
+        <td colspan="4" class="text-center">Data tidak ditemukan</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-between align-items-center">
+    <button
+      class="btn btn-outline-primary btn-sm"
+      (click)="prevPage()"
+      [disabled]="currentPage === 1"
+    >
+      Prev
+    </button>
+    <span>Hal {{ currentPage }} / {{ totalPages }}</span>
+    <button
+      class="btn btn-outline-primary btn-sm"
+      (click)="nextPage()"
+      [disabled]="currentPage === totalPages"
+    >
+      Next
+    </button>
+  </div>
+</div>

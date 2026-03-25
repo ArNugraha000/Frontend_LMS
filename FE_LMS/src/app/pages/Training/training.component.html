@@ -1,0 +1,192 @@
+<!-- ================= CARD MENU ================= -->
+<div class="row">
+  <!-- LEFT BUTTON -->
+  <div class="col-lg-4 col-md-6 col-sm-6">
+    <div class="card card-stats clickable-card" (click)="onLeftClick()">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-5 col-md-4">
+            <div class="icon-big text-center icon-primary">
+              <i class="nc-icon nc-hat-3 text-primary"></i>
+            </div>
+          </div>
+          <div class="col-7 col-md-8">
+            <div class="numbers">
+              <p class="card-category">Kursus, Saya</p>
+              <p class="card-title">Kursus</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <hr />
+        <div class="stats"><i class="fa fa-bars"></i>Menu</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MIDDLE BUTTON -->
+  <div class="col-lg-4 col-md-6 col-sm-6">
+    <div class="card card-stats clickable-card" (click)="onMiddleClick()">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-5 col-md-4">
+            <div class="icon-big text-center icon-success">
+              <i class="nc-icon nc-single-02 text-success"></i>
+            </div>
+          </div>
+          <div class="col-7 col-md-8">
+            <div class="numbers">
+              <p class="card-category">Profil, Saya</p>
+              <p class="card-title">Profil</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <hr />
+        <div class="stats"><i class="fa fa-bars"></i> Menu</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT INFO -->
+  <div class="col-lg-4 col-md-12 col-sm-12">
+    <div class="card card-stats">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-5 col-md-4">
+            <div class="icon-big text-center icon-warning">
+              <i class="nc-icon nc-chart-bar-32 text-warning"></i>
+            </div>
+          </div>
+          <div class="col-7 col-md-8">
+            <div class="numbers">
+              <p class="card-category">Total Kursus</p>
+              <p class="card-title">{{ filteredData.length }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <hr />
+        <div class="stats"><i class="fa fa-refresh"></i> Update otomatis</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<table class="table course-table">
+  <tbody>
+    <tr *ngFor="let item of pagedData">
+      <!-- LOGO PERUSAHAAN -->
+      <td style="width: 260px">
+        <div class="company-box">
+          <img
+            *ngIf="item.company_logo"
+            [src]="item.company_logo"
+            class="company-logo"
+          />
+
+          <div>
+            <div class="company-name">
+              {{ item.company_name }}
+            </div>
+
+            <div class="company-desc">
+              {{ item.company_desc }}
+            </div>
+          </div>
+        </div>
+      </td>
+
+      <!-- GAMBAR COURSE -->
+      <td style="width: 150px">
+        <img *ngIf="item.image" [src]="item.image" class="course-img" />
+      </td>
+
+      <!-- INFO COURSE -->
+      <td>
+        <div class="course-title">
+          {{ item.course_name }}
+        </div>
+
+        <!-- STATUS -->
+        <span class="badge badge-success" *ngIf="item.status == 'Berjalan'">
+          Berjalan
+        </span>
+
+        <span class="badge badge-secondary" *ngIf="item.status == 'Selesai'">
+          Selesai
+        </span>
+
+        <div class="start-date">Waktu Mulai : {{ item.start_date }}</div>
+
+        <!-- PROGRESS -->
+        <div class="progress">
+          <div class="progress-bar" [style.width.%]="item.progress"></div>
+        </div>
+
+        <!-- BUTTON -->
+        <button *ngIf="item.status == 'Berjalan'" class="btn btn-info btn-sm">
+          MENGISI KEHADIRAN
+        </button>
+
+        <button *ngIf="item.status == 'Selesai'" class="btn btn-dark btn-sm">
+          RIWAYAT
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<style>
+  .course-table tr {
+    border-bottom: 1px solid #eee;
+  }
+
+  .company-box {
+    display: flex;
+    align-items: center;
+  }
+
+  .company-logo {
+    width: 40px;
+    margin-right: 10px;
+  }
+
+  .company-name {
+    font-weight: bold;
+  }
+
+  .company-desc {
+    font-size: 12px;
+    color: #777;
+  }
+
+  .course-img {
+    width: 120px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .course-title {
+    font-weight: 600;
+  }
+
+  .start-date {
+    font-size: 13px;
+    color: #555;
+  }
+
+  .progress {
+    height: 6px;
+    background: #eee;
+    margin: 6px 0;
+  }
+
+  .progress-bar {
+    background: #2b7de9;
+  }
+</style>
