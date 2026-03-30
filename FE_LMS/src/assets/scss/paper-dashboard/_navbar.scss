@@ -315,3 +315,31 @@
 .bg-white {
   background-color: $white-color !important;
 }
+
+//navbar user/role/profile
+.user-info {
+  margin-left: 15px;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #000;
+}
+
+.user-role {
+  font-size: 9px;
+  font-weight: bold;
+  color: #9a9a9a; /* abu */
+  margin-top: -2px;
+}
+.user-avatar {
+  margin-left: 10px; /* 🔥 jarak antara teks dan foto */
+}
+.user-avatar img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%; /* 🔥 bikin bulat */
+  object-fit: cover;
+  border: 2px solid #ddd; /* frame tipis */
+}

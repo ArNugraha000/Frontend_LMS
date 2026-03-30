@@ -10,7 +10,7 @@ export interface RouteInfo {
 export const ROUTES: RouteInfo[] = [
   {
     path: "/dashboard",
-    title: "Dashboard",
+    title: "Beranda",
     icon: "nc-chart-bar-32",
     class: "",
   },
@@ -46,9 +46,9 @@ export const ROUTES: RouteInfo[] = [
   //   class: "",
   // },
   {
-    path: "/Logout",
-    title: "Logout",
-    icon: "nc-spaceship",
+    path: "/configuration",
+    title: "konfigurasi",
+    icon: "nc-settings",
     class: "active-pro",
   },
 ];

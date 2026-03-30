@@ -20,6 +20,8 @@ import { AboutComponent } from "../../general-pages/about/about.component";
 import { LoginComponent } from "../../general-pages/login/login.component";
 import { LandingPageComponent } from "../../general-pages/landing-page/landingpage.component";
 import { CreateAccountComponent } from "../../general-pages/create-account/createaccount.component";
+import { LogoutComponent } from "../../pages/logout/logout.component";
+import { ConfigurationComponent } from "../../pages/configuration/configuration.component";
 
 @NgModule({
   imports: [
@@ -44,6 +46,8 @@ import { CreateAccountComponent } from "../../general-pages/create-account/creat
     LoginComponent,
     LandingPageComponent,
     CreateAccountComponent,
+    LogoutComponent,
+    ConfigurationComponent,
   ],
 })
 export class AdminLayoutModule {}

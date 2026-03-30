@@ -1,4 +1,7 @@
 import { Component } from "@angular/core";
+import { UserService } from "../../Service/user.service";
+import { Router } from "@angular/router";
+import { CookieService } from "ngx-cookie-service";
 
 @Component({
   selector: "app-login",
@@ -13,7 +16,11 @@ export class LoginComponent {
   captchaAnswer: string = "";
   correctAnswer: number = 0;
 
-  constructor() {
+  constructor(
+    private userService: UserService,
+    private router: Router,
+    private cookiesService: CookieService,
+  ) {
     this.generateCaptcha();
   }
 
@@ -40,6 +47,34 @@ export class LoginComponent {
       return;
     }
 
-    alert("Login berhasil (dummy)");
+    const payload = {
+      usrName: this.email,
+      usrPassword: this.password,
+    };
+
+    this.userService.login(payload).subscribe({
+      next: (res: any) => {
+        if (res && res.length > 0) {
+          alert("Login berhasil ✅");
+
+          const user = res[0];
+
+          // 🔥 simpan ke cookies
+          localStorage.setItem("isLogin", "true"); // 🔥 tandain login
+          this.cookiesService.set("userId", user.usrId);
+          this.cookiesService.set("userName", user.usrName);
+          this.cookiesService.set("userRole", user.role || "User");
+          this.cookiesService.set("userImage", "assets/img/mike.jpg");
+
+          this.router.navigateByUrl("/dashboard");
+        } else {
+          alert("Username / Password salah ❌");
+        }
+      },
+      error: (err) => {
+        console.error(err);
+        alert("Error server ❌");
+      },
+    });
   }
 }

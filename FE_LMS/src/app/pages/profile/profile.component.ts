@@ -6,24 +6,4 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
   moduleId: module.id,
   templateUrl: "profile.component.html",
 })
-export class ProfileComponent {
-  formData: FormGroup;
-
-  constructor(private fb: FormBuilder) {
-    this.formData = this.fb.group({
-      nama: ["", Validators.required],
-      email: ["", [Validators.required, Validators.email]],
-      telepon: ["", Validators.required],
-      alamat: [""],
-    });
-  }
-
-  submitForm() {
-    if (this.formData.valid) {
-      console.log("Data Form:", this.formData.value);
-      alert("Data berhasil dikirim!");
-    } else {
-      this.formData.markAllAsTouched();
-    }
-  }
-}
+export class ProfileComponent {}

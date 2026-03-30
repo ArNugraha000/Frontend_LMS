@@ -14,6 +14,8 @@ import { AboutComponent } from "../../general-pages/about/about.component";
 import { LoginComponent } from "../../general-pages/login/login.component";
 import { LandingPageComponent } from "../../general-pages/landing-page/landingpage.component";
 import { CreateAccountComponent } from "../../general-pages/create-account/createaccount.component";
+import { LogoutComponent } from "../../pages/logout/logout.component";
+import { ConfigurationComponent } from "../../pages/configuration/configuration.component";
 
 export const AdminLayoutRoutes: Routes = [
   { path: "dashboard", component: DashboardComponent },
@@ -30,5 +32,7 @@ export const AdminLayoutRoutes: Routes = [
   { path: "login", component: LoginComponent },
   { path: "landingpage", component: LandingPageComponent },
   { path: "register", component: CreateAccountComponent },
+  { path: "logout", component: LogoutComponent },
+  { path: "configuration", component: ConfigurationComponent },
   ,
 ];
