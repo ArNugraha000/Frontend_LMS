@@ -204,3 +204,60 @@
   outline: none;
   display: none;
 }
+
+/* Tombol confirm merah, tulisan putih */
+.swal-confirm {
+  background-color: #ba0403 !important; /* merah */
+  color: white !important; /* tulisan putih */
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  outline: none; /* hilangkan outline default */
+  box-shadow: none; /* hilangkan shadow saat focus */
+  margin-right: 10px; /* spasi kanan tombol confirm */
+}
+
+/* Tombol cancel putih, teks merah */
+.swal-cancel {
+  background-color: white !important;
+  color: #ba0403 !important;
+  border: 2px solid #ba0403;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  outline: none;
+  box-shadow: none;
+}
+
+/* Hilangkan efek outline/garis saat focus / active */
+.swal-confirm:focus,
+.swal-confirm:active,
+.swal-cancel:focus,
+.swal-cancel:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: inherit !important; /* tetap merah / sesuai border */
+}
+
+/* Tombol OK di success popup */
+.swal-success-btn {
+  background-color: white !important; /* putih */
+  color: #ba0403 !important; /* tulisan merah */
+  border: 2px solid #ba0403 !important; /* outline merah */
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  outline: none;
+  box-shadow: none;
+}
+
+.swal-success-btn:focus,
+.swal-success-btn:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: #ba0403 !important;
+}

@@ -17,6 +17,7 @@ import { TrainingComponent } from "./pages/Training/training.component";
 import { HttpClientModule } from "@angular/common/http";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule } from "@angular/forms";
+import { NgSelectModule } from "@ng-select/ng-select";
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { FormsModule } from "@angular/forms";
     FooterModule,
     FixedPluginModule,
     ReactiveFormsModule,
+    NgSelectModule,
   ],
   bootstrap: [AppComponent],
 })

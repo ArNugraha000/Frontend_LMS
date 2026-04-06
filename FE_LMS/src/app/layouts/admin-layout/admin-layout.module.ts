@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms"; // 👈 UPDATE
+import { NgSelectModule } from "@ng-select/ng-select";
 
 import { AdminLayoutRoutes } from "./admin-layout.routing";
 
@@ -22,6 +23,8 @@ import { LandingPageComponent } from "../../general-pages/landing-page/landingpa
 import { CreateAccountComponent } from "../../general-pages/create-account/createaccount.component";
 import { LogoutComponent } from "../../pages/logout/logout.component";
 import { ConfigurationComponent } from "../../pages/configuration/configuration.component";
+import { PengajuanformL3Component } from "../../pages/pengajuanformL3/pengajuanformL3.component";
+import { PendaftaranComponent } from "../../pages/pendaftaran/pendaftaran.component";
 
 @NgModule({
   imports: [
@@ -31,6 +34,7 @@ import { ConfigurationComponent } from "../../pages/configuration/configuration.
     ReactiveFormsModule,
     NgbModule,
     FormsModule,
+    NgSelectModule,
   ],
   declarations: [
     DashboardComponent,
@@ -48,6 +52,8 @@ import { ConfigurationComponent } from "../../pages/configuration/configuration.
     CreateAccountComponent,
     LogoutComponent,
     ConfigurationComponent,
+    PengajuanformL3Component,
+    PendaftaranComponent,
   ],
 })
 export class AdminLayoutModule {}

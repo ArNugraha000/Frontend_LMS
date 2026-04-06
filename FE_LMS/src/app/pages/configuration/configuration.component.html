@@ -1,370 +1,9 @@
-<div class="container mt-4">
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <!-- 🔥 NAV STEP -->
-      <ul
-        ngbNav
-        #nav="ngbNav"
-        [(activeId)]="activeTab"
-        class="step-tabs-elegant"
-      >
-        <!-- DIVISI -->
-        <li [ngbNavItem]="'divisi'" class="nav-item">
-          <a ngbNavLink class="nav-link">
-            <div class="step-item">
-              <div class="step-circle"><i class="bi bi-building"></i></div>
-              <div class="step-label">Divisi</div>
-            </div>
-          </a>
-
-          <ng-template ngbNavContent>
-            <div class="tab-content-wrapper">
-              <button
-                class="btn btn-primary btn-sm mb-3"
-                (click)="tambah('divisi')"
-              >
-                + Tambah
-              </button>
-
-              <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                  <thead>
-                    <tr>
-                      <th>No</th>
-                      <th>Kode</th>
-                      <th>Nama</th>
-                      <th>Status</th>
-                      <th>Aksi</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    <tr *ngFor="let item of divisiList; let i = index">
-                      <td>{{ i + 1 }}</td>
-                      <td>{{ item.divJudul }}</td>
-                      <td>{{ item.divNama }}</td>
-                      <td>
-                        <span
-                          [ngClass]="
-                            item.divStatus === 'AKTIF'
-                              ? 'badge bg-success'
-                              : 'badge bg-secondary'
-                          "
-                        >
-                          {{ item.divStatus }}
-                        </span>
-                      </td>
-                      <td>
-                        <div class="action-container">
-                          <!-- EDIT BUTTON -->
-                          <button class="edit-btn" (click)="edit(item)">
-                            <i class="bi bi-pencil"></i>
-                          </button>
-
-                          <!-- TOGGLE SWITCH -->
-                          <label class="switch">
-                            <input
-                              type="checkbox"
-                              [checked]="
-                                item.divStatus.toUpperCase() === 'AKTIF'
-                              "
-                              (change)="toggleStatus(item, 'divisi')"
-                            />
-                            <span class="slider"></span>
-                          </label>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </ng-template>
-        </li>
-
-        <!-- DEPARTEMEN -->
-        <li [ngbNavItem]="'departemen'" class="nav-item">
-          <a ngbNavLink class="nav-link">
-            <div class="step-item">
-              <div class="step-circle"><i class="bi bi-diagram-3"></i></div>
-              <div class="step-label">Departemen</div>
-            </div>
-          </a>
-
-          <ng-template ngbNavContent>
-            <div class="tab-content-wrapper">
-              <button
-                class="btn btn-primary btn-sm mb-3"
-                (click)="tambah('departemen')"
-              >
-                + Tambah
-              </button>
-
-              <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                  <thead class="table-light">
-                    <tr>
-                      <th>No</th>
-                      <th>Kode</th>
-                      <th>Nama</th>
-                      <th>Divisi</th>
-                      <th>Status</th>
-                      <th>Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let item of departemenList; let i = index">
-                      <td>{{ i + 1 }}</td>
-                      <td>{{ item.depJudul }}</td>
-                      <td>{{ item.depNama }}</td>
-                      <td>{{ item.divNama }}</td>
-                      <td>
-                        <span
-                          [ngClass]="
-                            item.depStatus === 'AKTIF'
-                              ? 'badge bg-success'
-                              : 'badge bg-secondary'
-                          "
-                        >
-                          {{ item.depStatus }}
-                        </span>
-                      </td>
-                      <td>
-                        <div class="action-container">
-                          <!-- EDIT BUTTON -->
-                          <button class="edit-btn" (click)="edit(item)">
-                            <i class="bi bi-pencil"></i>
-                          </button>
-
-                          <!-- TOGGLE SWITCH -->
-                          <label class="switch">
-                            <input
-                              type="checkbox"
-                              [checked]="
-                                item.depStatus.toUpperCase() === 'AKTIF'
-                              "
-                              (change)="toggleStatus(item, 'departemen')"
-                            />
-                            <span class="slider"></span>
-                          </label>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </ng-template>
-        </li>
-
-        <!-- SEKSI -->
-        <li [ngbNavItem]="'seksi'" class="nav-item">
-          <a ngbNavLink class="nav-link">
-            <div class="step-item">
-              <div class="step-circle">
-                <i class="bi bi-gear-wide-connected"></i>
-              </div>
-              <div class="step-label">Seksi</div>
-            </div>
-          </a>
-
-          <ng-template ngbNavContent>
-            <div class="tab-content-wrapper">
-              <button
-                class="btn btn-primary btn-sm mb-3"
-                (click)="tambah('seksi')"
-              >
-                + Tambah
-              </button>
-
-              <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                  <thead class="table-light">
-                    <tr>
-                      <th>No</th>
-                      <th>Kode</th>
-                      <th>Nama</th>
-                      <th>Departemen</th>
-                      <th>Status</th>
-                      <th>Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let item of seksiList; let i = index">
-                      <td>{{ i + 1 }}</td>
-                      <td>{{ item.sekJudul }}</td>
-                      <td>{{ item.sekNama }}</td>
-                      <td>{{ item.depNama }}</td>
-                      <td>
-                        <span
-                          [ngClass]="
-                            item.sekStatus === 'AKTIF'
-                              ? 'badge bg-success'
-                              : 'badge bg-secondary'
-                          "
-                        >
-                          {{ item.sekStatus }}
-                        </span>
-                      </td>
-                      <td>
-                        <div class="action-container">
-                          <!-- EDIT BUTTON -->
-                          <button class="edit-btn" (click)="edit(item)">
-                            <i class="bi bi-pencil"></i>
-                          </button>
-
-                          <!-- TOGGLE SWITCH -->
-                          <label class="switch">
-                            <input
-                              type="checkbox"
-                              [checked]="
-                                item.sekStatus?.toUpperCase() === 'AKTIF'
-                              "
-                              (change)="toggleStatus(item, 'seksi')"
-                            />
-                            <span class="slider"></span>
-                          </label>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </ng-template>
-        </li>
-      </ul>
-
-      <!-- 🔥 OUTPUT -->
-      <div class="mt-4">
-        <div [ngbNavOutlet]="nav"></div>
-      </div>
-    </div>
-  </div>
-</div>
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-  rel="stylesheet"
-/>
-
-<ng-template #modalDivisi let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">Tambah Divisi</h5>
-    <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
-  </div>
-
-  <div class="modal-body">
-    <div class="mb-3">
-      <label>Kode</label>
-      <input class="form-control" [(ngModel)]="formDivisi.divJudul" />
-    </div>
-
-    <div class="mb-3">
-      <label>Nama</label>
-      <input class="form-control" [(ngModel)]="formDivisi.divNama" />
-    </div>
-  </div>
-
-  <div class="modal-footer">
-    <button class="btn btn-secondary" (click)="modal.dismiss()">Batal</button>
-    <button class="btn btn-primary" (click)="saveDivisi(modal)">Simpan</button>
-  </div>
-</ng-template>
-
-<ng-template #modalDepartemen let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">Tambah Departemen</h5>
-    <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
-  </div>
-
-  <div class="modal-body">
-    <div class="mb-3">
-      <label>Kode</label>
-      <input class="form-control" [(ngModel)]="formDepartemen.depNama" />
-    </div>
-
-    <div class="mb-3">
-      <label>Nama</label>
-      <input class="form-control" [(ngModel)]="formDepartemen.depJudul" />
-    </div>
-
-    <div class="mb-3">
-      <label>Divisi</label>
-
-      <select class="form-control" [(ngModel)]="formDepartemen.divId">
-        <option *ngFor="let d of divisiList" [value]="d.divId">
-          {{ d.divNama }}
-        </option>
-      </select>
-    </div>
-  </div>
-
-  <div class="modal-footer">
-    <button class="btn btn-secondary" (click)="modal.dismiss()">Batal</button>
-    <button class="btn btn-primary" (click)="saveDepartemen(modal)">
-      Simpan
-    </button>
-  </div>
-</ng-template>
-
-<ng-template #modalSeksi let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">Tambah Seksi</h5>
-    <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
-  </div>
-
-  <div class="modal-body">
-    <div class="mb-3">
-      <label>Kode</label>
-      <input
-        type="text"
-        class="form-control"
-        [(ngModel)]="formSeksi.sekJudul"
-      />
-    </div>
-
-    <div class="mb-3">
-      <label>Nama</label>
-      <input type="text" class="form-control" [(ngModel)]="formSeksi.sekNama" />
-    </div>
-
-    <div class="mb-3">
-      <label>Departemen</label>
-      <select class="form-control" [(ngModel)]="formSeksi.depId">
-        <option *ngFor="let d of departemenList" [value]="d.depId">
-          {{ d.depNama }}
-        </option>
-      </select>
-    </div>
-  </div>
-
-  <div class="modal-footer">
-    <button class="btn btn-secondary" (click)="modal.dismiss()">Batal</button>
-    <button class="btn btn-primary" (click)="saveSeksi(modal)">Simpan</button>
-  </div>
-</ng-template>
-
 <style>
   /* Container agar sejajar */
   .action-container {
     display: flex;
     align-items: center; /* Vertikal sejajar */
     gap: 8px; /* Jarak antar tombol dan toggle */
-  }
-
-  /* Tombol edit */
-  .edit-btn {
-    background-color: #ba0403;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 0;
   }
 
   /* Toggle Switch */
@@ -412,4 +51,773 @@
   input:checked + .slider:before {
     transform: translateX(22px);
   }
+
+  /* BUTTON +/save/cancel*/
+  .btn-modern,
+  .btn-modern-outline {
+    min-width: 110px;
+    height: 40px;
+    padding: 0 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    box-sizing: border-box; /* penting */
+  }
+  .btn-modern {
+    background: linear-gradient(135deg, #ba0403, #8e0302);
+    color: #fff;
+    border: 2px solid #ba0403; /* samain border */
+    box-shadow: 0 4px 10px rgba(186, 4, 3, 0.3);
+  }
+
+  .btn-modern i {
+    font-size: 14px;
+  }
+
+  /* Hover */
+  .btn-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(186, 4, 3, 0.5);
+    background: linear-gradient(135deg, #d90404, #a60303);
+  }
+
+  /* Click */
+  .btn-modern:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 6px rgba(186, 4, 3, 0.3);
+  }
+
+  /* OUTLINE */
+  .btn-modern-outline {
+    background: #fff;
+    color: #ba0403;
+    border: 2px solid #ba0403;
+  }
+
+  .btn-modern-outline i {
+    font-size: 14px;
+  }
+
+  /* Hover */
+  .btn-modern-outline:hover {
+    background: #ba0403;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(186, 4, 3, 0.4);
+    transform: translateY(-2px);
+  }
+
+  /* Click */
+  .btn-modern-outline:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 6px rgba(186, 4, 3, 0.3);
+  }
+
+  /* === */
+  /* ICON */
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ba0403, #8e0302);
+    color: #fff;
+    border: none;
+    box-shadow: 0 3px 8px rgba(186, 4, 3, 0.3);
+    transition: all 0.2s ease;
+  }
+
+  /* Icon size */
+  .btn-icon i {
+    font-size: 14px;
+  }
+
+  /* Hover */
+  .btn-icon:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 10px rgba(186, 4, 3, 0.4);
+  }
+
+  /* Click */
+  .btn-icon:active {
+    transform: scale(0.95);
+  }
+
+  /* === */
+  /* CIRCLE-BUTTON-ICON */
+  .btn-icon-outline-circle {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%; /* bikin bulat */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: #ba0403;
+    border: 2px solid #ba0403;
+    transition: all 0.25s ease;
+    cursor: pointer;
+  }
+
+  /* Icon */
+  .btn-icon-outline-circle i {
+    font-size: 14px;
+  }
+
+  /* Hover */
+  .btn-icon-outline-circle:hover {
+    background: #ba0403;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(186, 4, 3, 0.4);
+    transform: translateY(-1px);
+  }
+
+  /* Click */
+  .btn-icon-outline-circle:active {
+    transform: scale(0.9);
+  }
+
+  /* === */
+  /* NAV LINK ACTIVE */
+  .nav-link.active .btn-icon-outline-circle {
+    background-color: #ba0403; /* biru bootstrap */
+    color: white;
+    border-color: #ba0403;
+  }
+
+  /* optional: icon ikut putih */
+  .nav-link.active .btn-icon-outline-circle i {
+    color: white;
+  }
+
+  /* BASE aktif/nonaktif*/
+  .badge-custom-active,
+  .badge-custom-outline {
+    padding: 5px 12px;
+    font-size: 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    display: inline-block;
+    text-align: center;
+    min-width: 70px;
+  }
+
+  /* AKTIF (solid merah) */
+  .badge-custom-active {
+    background: #ba0403;
+    color: #fff;
+    border: 1.5px solid #ba0403;
+  }
+
+  /* NON AKTIF (outline merah) */
+  .badge-custom-outline {
+    background: #fff;
+    color: #ba0403;
+    border: 1.5px solid #ba0403;
+  }
+
+  /* btnCLOSE */
+  .btn-close-custom {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  /* icon styling */
+  .btn-close-custom i {
+    font-size: 18px;
+    color: #333;
+  }
+
+  /* hover biar ada efek dikit */
+  .btn-close-custom:hover i {
+    color: #ba0403;
+  }
+
+  /* ==== */
+  /* searchtable */
+  input.form-control {
+    transition: 0.3s;
+  }
+
+  input.form-control:focus {
+    border-color: #ba0403;
+    box-shadow: 0 0 0 0.2rem rgba(186, 4, 3, 0.2);
+  }
+
+  .table-wrapper {
+    min-height: 50vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* pagination stay di bawah */
+  .table-wrapper > div:last-child {
+    margin-top: auto;
+  }
 </style>
+
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <!-- 🔥 NAV STEP -->
+      <ul
+        ngbNav
+        #nav="ngbNav"
+        [(activeId)]="activeTab"
+        class="step-tabs-elegant"
+      >
+        <!-- DIVISI -->
+        <li [ngbNavItem]="'divisi'" class="nav-item">
+          <a ngbNavLink class="nav-link">
+            <div class="step-item">
+              <div class="btn-icon-outline-circle">
+                <i class="bi bi-building"></i>
+              </div>
+              <div class="step-label">Divisi</div>
+            </div>
+          </a>
+
+          <ng-template ngbNavContent>
+            <div class="tab-content-wrapper">
+              <div
+                class="d-flex align-items-center justify-content-between mb-3"
+              >
+                <!-- LEFT: BUTTON -->
+                <button class="btn-modern" (click)="tambah('divisi')">
+                  <i class="bi bi-plus-lg"></i> Tambah
+                </button>
+
+                <!-- CENTER: SEARCH -->
+                <div style="width: 300px">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Cari Divisi..."
+                    [(ngModel)]="searchDivisi"
+                    style="border-radius: 10px"
+                  />
+                </div>
+
+                <!-- RIGHT (kosong biar balance) -->
+                <div style="width: 10vh"></div>
+              </div>
+
+              <div class="table-wrapper">
+                <table class="table table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Kode</th>
+                      <th>Nama</th>
+                      <th>Status</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr *ngFor="let item of pagedDivisi; let i = index">
+                      <td>{{ i + 1 }}</td>
+                      <td>{{ item.divJudul }}</td>
+                      <td>{{ item.divNama }}</td>
+                      <td>
+                        <span
+                          [ngClass]="
+                            item.divStatus === 'AKTIF'
+                              ? 'badge-custom-active'
+                              : 'badge-custom-outline'
+                          "
+                        >
+                          {{ item.divStatus }}
+                        </span>
+                      </td>
+                      <td>
+                        <div class="action-container">
+                          <!-- EDIT BUTTON -->
+                          <button class="btn-icon" (click)="editDivisi(item)">
+                            <i class="bi bi-pencil"></i>
+                          </button>
+
+                          <!-- TOGGLE SWITCH -->
+                          <label class="switch">
+                            <input
+                              type="checkbox"
+                              [checked]="
+                                item.divStatus?.toUpperCase() === 'AKTIF'
+                              "
+                              (click)="
+                                confirmToggleStatus($event, item, 'divisi')
+                              "
+                            />
+                            <span class="slider"></span>
+                          </label>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div
+                class="d-flex justify-content-between align-items-center mt-3"
+              >
+                <select
+                  class="form-control"
+                  style="width: 120px"
+                  [(ngModel)]="pageSizeDivisi"
+                  (change)="pageDivisi = 1"
+                >
+                  <option *ngFor="let opt of pageSizeOptions" [ngValue]="opt">
+                    {{ opt }}
+                  </option>
+                </select>
+
+                <div>
+                  <button
+                    class="btn btn-sm btn-outline-secondary me-2"
+                    (click)="pageDivisi = pageDivisi - 1"
+                    [disabled]="pageDivisi === 1"
+                  >
+                    Prev
+                  </button>
+
+                  {{ pageDivisi }} / {{ totalPagesDivisi }}
+
+                  <button
+                    class="btn btn-sm btn-outline-secondary ms-2"
+                    (click)="pageDivisi = pageDivisi + 1"
+                    [disabled]="pageDivisi === totalPagesDivisi"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </li>
+
+        <!-- DEPARTEMEN -->
+        <li [ngbNavItem]="'departemen'" class="nav-item">
+          <a ngbNavLink class="nav-link">
+            <div class="step-item">
+              <div class="btn-icon-outline-circle">
+                <i class="bi bi-diagram-3"></i>
+              </div>
+              <div class="step-label">Departemen</div>
+            </div>
+          </a>
+
+          <ng-template ngbNavContent>
+            <div class="tab-content-wrapper">
+              <div
+                class="d-flex align-items-center justify-content-between mb-3"
+              >
+                <button class="btn-modern" (click)="tambah('departemen')">
+                  <i class="bi bi-plus-lg"></i> Tambah
+                </button>
+
+                <!-- CENTER: SEARCH -->
+                <div style="width: 300px">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Cari Departemen..."
+                    [(ngModel)]="searchDepartemen"
+                    style="border-radius: 10px"
+                  />
+                </div>
+
+                <!-- RIGHT (kosong biar balance) -->
+                <div style="width: 10vh"></div>
+              </div>
+
+              <div class="table-responsive">
+                <div class="mb-3"></div>
+                <table class="table table-striped table-hover">
+                  <thead class="table-light">
+                    <tr>
+                      <th>No</th>
+                      <th>Kode</th>
+                      <th>Nama</th>
+                      <th>Divisi</th>
+                      <th>Status</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of pagedDepartemen; let i = index">
+                      <td>{{ i + 1 }}</td>
+                      <td>{{ item.depJudul }}</td>
+                      <td>{{ item.depNama }}</td>
+                      <td>{{ item.divNama }}</td>
+                      <td>
+                        <span
+                          [ngClass]="
+                            item.depStatus === 'AKTIF'
+                              ? 'badge-custom-active'
+                              : 'badge-custom-outline'
+                          "
+                        >
+                          {{ item.depStatus }}
+                        </span>
+                      </td>
+                      <td>
+                        <div class="action-container">
+                          <!-- EDIT BUTTON -->
+                          <button
+                            class="btn-icon"
+                            (click)="editDepartemen(item)"
+                          >
+                            <i class="bi bi-pencil"></i>
+                          </button>
+
+                          <!-- TOGGLE SWITCH -->
+                          <label class="switch">
+                            <input
+                              type="checkbox"
+                              [checked]="
+                                item.depStatus?.toUpperCase() === 'AKTIF'
+                              "
+                              (click)="
+                                confirmToggleStatus($event, item, 'departemen')
+                              "
+                            />
+                            <span class="slider"></span>
+                          </label>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div
+                class="d-flex justify-content-between align-items-center mt-3"
+              >
+                <select
+                  class="form-control"
+                  style="width: 120px"
+                  [(ngModel)]="pageSizeDepartemen"
+                  (change)="pageDepartemen = 1"
+                >
+                  <option *ngFor="let opt of pageSizeOptions" [ngValue]="opt">
+                    {{ opt }}
+                  </option>
+                </select>
+
+                <div>
+                  <button
+                    class="btn btn-sm btn-outline-secondary me-2"
+                    (click)="pageDepartemen = pageDepartemen - 1"
+                    [disabled]="pageDepartemen === 1"
+                  >
+                    Prev
+                  </button>
+
+                  {{ pageDepartemen }} / {{ totalPagesDepartemen }}
+
+                  <button
+                    class="btn btn-sm btn-outline-secondary ms-2"
+                    (click)="pageDepartemen = pageDepartemen + 1"
+                    [disabled]="pageDepartemen === totalPagesDepartemen"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </li>
+
+        <!-- SEKSI -->
+        <li [ngbNavItem]="'seksi'" class="nav-item">
+          <a ngbNavLink class="nav-link">
+            <div class="step-item">
+              <div class="btn-icon-outline-circle">
+                <i class="bi bi-gear-wide-connected"></i>
+              </div>
+              <div class="step-label">Seksie</div>
+            </div>
+          </a>
+
+          <ng-template ngbNavContent>
+            <div class="tab-content-wrapper">
+              <div
+                class="d-flex align-items-center justify-content-between mb-3"
+              >
+                <button class="btn-modern" (click)="tambah('seksi')">
+                  <i class="bi bi-plus-lg"></i> Tambah
+                </button>
+
+                <!-- CENTER: SEARCH -->
+                <div style="width: 300px">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Cari Seksie..."
+                    [(ngModel)]="searchSeksi"
+                    style="border-radius: 10px"
+                  />
+                </div>
+
+                <!-- RIGHT (kosong biar balance) -->
+                <div style="width: 15vh"></div>
+              </div>
+
+              <div class="table-responsive">
+                <div class="mb-3"></div>
+                <table class="table table-striped table-hover">
+                  <thead class="table-light">
+                    <tr>
+                      <th>No</th>
+                      <th>Kode</th>
+                      <th>Nama</th>
+                      <th>Departemen</th>
+                      <th>Status</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of pagedSeksi; let i = index">
+                      <td>{{ i + 1 }}</td>
+                      <td>{{ item.sekJudul }}</td>
+                      <td>{{ item.sekNama }}</td>
+                      <td>{{ item.depNama }}</td>
+                      <td>
+                        <span
+                          [ngClass]="
+                            item.sekStatus === 'AKTIF'
+                              ? 'badge-custom-active'
+                              : 'badge-custom-outline'
+                          "
+                        >
+                          {{ item.sekStatus }}
+                        </span>
+                      </td>
+                      <td>
+                        <div class="action-container">
+                          <!-- EDIT BUTTON -->
+                          <button class="btn-icon" (click)="editSeksie(item)">
+                            <i class="bi bi-pencil"></i>
+                          </button>
+
+                          <!-- TOGGLE SWITCH -->
+                          <label class="switch">
+                            <input
+                              type="checkbox"
+                              [checked]="
+                                item.sekStatus?.toUpperCase() === 'AKTIF'
+                              "
+                              (click)="
+                                confirmToggleStatus($event, item, 'seksi')
+                              "
+                            />
+                            <span class="slider"></span>
+                          </label>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <select
+                class="form-control"
+                style="width: 120px"
+                [(ngModel)]="pageSizeSeksi"
+                (change)="pageSeksi = 1"
+              >
+                <option *ngFor="let opt of pageSizeOptions" [ngValue]="opt">
+                  {{ opt }}
+                </option>
+              </select>
+
+              <div>
+                <button
+                  class="btn btn-sm btn-outline-secondary me-2"
+                  (click)="pageSeksi = pageSeksi - 1"
+                  [disabled]="pageSeksi === 1"
+                >
+                  Prev
+                </button>
+
+                {{ pageSeksi }} / {{ totalPagesSeksi }}
+
+                <button
+                  class="btn btn-sm btn-outline-secondary ms-2"
+                  (click)="pageSeksi = pageSeksi + 1"
+                  [disabled]="pageSeksi === totalPagesSeksi"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </ng-template>
+        </li>
+      </ul>
+
+      <!-- 🔥 OUTPUT -->
+      <div class="mt-4">
+        <div [ngbNavOutlet]="nav"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+  rel="stylesheet"
+/>
+
+<ng-template #modalDivisi let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">
+      {{ isEditDivisi ? "Edit Divisi" : "Tambah Divisi" }}
+    </h5>
+    <button type="button" class="btn-close-custom" (click)="modal.dismiss()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <div class="mb-3">
+      <label>Kode</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="formDivisi.divJudul"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label>Nama</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="formDivisi.divNama"
+      />
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn-modern-outline" (click)="modal.dismiss()">Batal</button>
+    <button class="btn-modern" (click)="saveDivisi(modal)">
+      {{ isEditDivisi ? "Ubah" : "Simpan" }}
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #modalDepartemen let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">
+      {{ isEditDepartemen ? "Edit Departemen" : "Tambah Departemen" }}
+    </h5>
+    <button type="button" class="btn-close-custom" (click)="modal.dismiss()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <div class="mb-3">
+      <label>Kode</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="formDepartemen.depJudul"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label>Nama</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="formDepartemen.depNama"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label>Divisi</label>
+
+      <ng-select
+        *ngIf="divisiList?.length"
+        [items]="divisiList"
+        bindLabel="divNama"
+        bindValue="divId"
+        placeholder="Pilih Divisi"
+        [(ngModel)]="formDepartemen.divId"
+        [ngModelOptions]="{ standalone: true }"
+        [searchable]="true"
+        [clearable]="true"
+        [maxHeight]="160"
+      >
+      </ng-select>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn-modern-outline" (click)="modal.dismiss()">Batal</button>
+    <button class="btn-modern" (click)="saveDepartemen(modal)">
+      {{ isEditDepartemen ? "Ubah" : "Simpan" }}
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #modalSeksi let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">
+      {{ isEditSeksi ? "Edit Seksi" : "Tambah Seksi" }}
+    </h5>
+    <button type="button" class="btn-close-custom" (click)="modal.dismiss()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <div class="mb-3">
+      <label>Kode</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="formSeksi.sekJudul"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label>Nama</label>
+      <input type="text" class="form-control" [(ngModel)]="formSeksi.sekNama" />
+    </div>
+
+    <div class="mb-3">
+      <label>Departemen</label>
+      <ng-select
+        *ngIf="departemenList?.length"
+        [items]="departemenList"
+        bindLabel="depNama"
+        bindValue="depId"
+        placeholder="Pilih Departemen"
+        [(ngModel)]="formSeksi.depId"
+        [ngModelOptions]="{ standalone: true }"
+        [searchable]="true"
+        [clearable]="true"
+        [maxHeight]="160"
+      >
+      </ng-select>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn-modern-outline" (click)="modal.dismiss()">Batal</button>
+    <button class="btn-modern" (click)="saveSeksi(modal)">
+      {{ isEditSeksi ? "Ubah" : "Simpan" }}
+    </button>
+  </div>
+</ng-template>

@@ -55,8 +55,6 @@ export class LoginComponent {
     this.userService.login(payload).subscribe({
       next: (res: any) => {
         if (res && res.length > 0) {
-          alert("Login berhasil ✅");
-
           const user = res[0];
 
           // 🔥 simpan ke cookies

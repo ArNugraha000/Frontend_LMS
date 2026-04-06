@@ -29,6 +29,18 @@ export const ROUTES: RouteInfo[] = [
   },
 
   { path: "/training", title: "Kursus", icon: "nc-hat-3", class: "" },
+  {
+    path: "/pendaftaran",
+    title: "Pendaftaran Peserta",
+    icon: "nc-badge",
+    class: "",
+  },
+  {
+    path: "/pengajuanforml3",
+    title: "Pengajuan Form L3",
+    icon: "nc-paper",
+    class: "",
+  },
 
   // { path: "/maps", title: "Maps", icon: "nc-pin-3", class: "" },
   // {

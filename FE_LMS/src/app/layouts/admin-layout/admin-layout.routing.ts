@@ -16,7 +16,8 @@ import { LandingPageComponent } from "../../general-pages/landing-page/landingpa
 import { CreateAccountComponent } from "../../general-pages/create-account/createaccount.component";
 import { LogoutComponent } from "../../pages/logout/logout.component";
 import { ConfigurationComponent } from "../../pages/configuration/configuration.component";
-
+import { PengajuanformL3Component } from "../../pages/pengajuanformL3/pengajuanformL3.component";
+import { PendaftaranComponent } from "../../pages/pendaftaran/pendaftaran.component";
 export const AdminLayoutRoutes: Routes = [
   { path: "dashboard", component: DashboardComponent },
   { path: "user", component: UserComponent },
@@ -34,5 +35,8 @@ export const AdminLayoutRoutes: Routes = [
   { path: "register", component: CreateAccountComponent },
   { path: "logout", component: LogoutComponent },
   { path: "configuration", component: ConfigurationComponent },
+  { path: "pengajuanforml3", component: PengajuanformL3Component },
+  { path: "pendaftaran", component: PendaftaranComponent },
+
   ,
 ];
