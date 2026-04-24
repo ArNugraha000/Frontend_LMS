@@ -1,0 +1,503 @@
+/* ================= QUIZ SOAL FORM STYLES ================= */
+/* Layout 2 Kolom */
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.form-container {
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  padding: 32px;
+}
+
+/* Header */
+.form-header {
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f2f5;
+}
+
+.form-header h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ba0403;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.form-header h3 i {
+  font-size: 28px;
+}
+
+/* Layout 2 Kolom */
+.two-column-layout {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.left-column {
+  flex: 1;
+  min-width: 300px;
+}
+
+.right-column {
+  flex: 1;
+  min-width: 400px;
+}
+
+/* Card Style */
+.card-info {
+  background: #f8fafc;
+  border-radius: 20px;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header-info {
+  background: linear-gradient(135deg, #ba0403, #8e0302);
+  padding: 16px 20px;
+  color: white;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-header-info i {
+  font-size: 20px;
+}
+
+.card-header-info span {
+  flex: 1;
+  font-size: 16px;
+}
+
+.card-body-info {
+  padding: 24px;
+  flex: 1;
+}
+
+/* Form Elements */
+.form-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #1e293b;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.form-label .required {
+  color: #ba0403;
+  margin-left: 4px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  background: #fff;
+}
+
+.form-control:focus {
+  border-color: #ba0403;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(186, 4, 3, 0.1);
+}
+
+textarea.form-control {
+  resize: vertical;
+  font-family: inherit;
+}
+
+/* Pilihan Jawaban List */
+.pilihan-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.pilihan-list-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.pilihan-list-container::-webkit-scrollbar-track {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+.pilihan-list-container::-webkit-scrollbar-thumb {
+  background: #ba0403;
+  border-radius: 10px;
+}
+
+.pilihan-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.pilihan-item:hover {
+  border-color: #ba0403;
+  box-shadow: 0 2px 8px rgba(186, 4, 3, 0.1);
+}
+
+.pilihan-kode-wrapper {
+  width: 50px;
+}
+
+.pilihan-kode-badge {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #ba0403, #8e0302);
+  color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.pilihan-teks-wrapper {
+  flex: 1;
+}
+
+.pilihan-input {
+  padding: 10px 14px;
+  border-radius: 12px;
+}
+
+.pilihan-aksi-wrapper {
+  width: 45px;
+}
+
+.btn-hapus-pilihan {
+  background: #fee2e2;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #ba0403;
+}
+
+.btn-hapus-pilihan:hover:not(:disabled) {
+  background: #ba0403;
+  color: white;
+  transform: scale(1.05);
+}
+
+.btn-hapus-pilihan:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Tombol Tambah Pilihan */
+.btn-tambah-pilihan-small {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 6px 14px;
+  border-radius: 30px;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-tambah-pilihan-small:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-tambah-pilihan-small:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Info Box */
+.info-box {
+  background: #fef2f2;
+  border-left: 4px solid #ba0403;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.info-box i {
+  color: #ba0403;
+  font-size: 18px;
+}
+
+.info-box small {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.info-box-success {
+  background: #e8f5e9;
+  border-left-color: #2e7d32;
+}
+
+.info-box-success i {
+  color: #2e7d32;
+}
+
+/* Jawaban Benar Section */
+.jawaban-benar-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.jawaban-benar-options {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.btn-jawaban-benar {
+  background: white;
+  border: 2px solid #e2e8f0;
+  padding: 10px 20px;
+  border-radius: 40px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #1e293b;
+}
+
+.btn-jawaban-benar i {
+  font-size: 16px;
+  color: #94a3b8;
+}
+
+.btn-jawaban-benar.active {
+  background: linear-gradient(135deg, #ba0403, #8e0302);
+  border-color: #ba0403;
+  color: white;
+}
+
+.btn-jawaban-benar.active i {
+  color: white;
+}
+
+.btn-jawaban-benar:hover:not(.active) {
+  border-color: #ba0403;
+  background: #fef2f2;
+}
+
+/* Tombol Aksi */
+.btn-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #edf2f7;
+  justify-content: flex-end;
+}
+
+.btn-simpan {
+  background: linear-gradient(135deg, #ba0403, #8e0302);
+  border: none;
+  padding: 12px 32px;
+  border-radius: 40px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(186, 4, 3, 0.3);
+}
+
+.btn-simpan:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow: 0 6px 16px rgba(186, 4, 3, 0.4);
+}
+
+.btn-batal {
+  background: #f1f5f9;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 40px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-batal:hover {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .two-column-layout {
+    flex-direction: column;
+  }
+
+  .left-column,
+  .right-column {
+    min-width: auto;
+  }
+
+  .form-container {
+    padding: 20px;
+  }
+
+  .pilihan-list-container {
+    max-height: 300px;
+  }
+}
+
+@media (max-width: 600px) {
+  .pilihan-item {
+    flex-wrap: wrap;
+  }
+
+  .pilihan-kode-wrapper {
+    width: 100%;
+  }
+
+  .pilihan-teks-wrapper {
+    width: 100%;
+  }
+
+  .pilihan-aksi-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .btn-actions {
+    flex-direction: column;
+  }
+
+  .btn-simpan,
+  .btn-batal {
+    justify-content: center;
+  }
+}
+/* BUTTON KEMBALI */
+.btn-back {
+  background: #f1f5f9;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #334155;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* ICON */
+.btn-back i {
+  font-size: 14px;
+}
+
+/* HOVER */
+.btn-back:hover {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+/* CLICK */
+.btn-back:active {
+  transform: scale(0.96);
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f2f5;
+  position: relative;
+}
+
+/* LEFT */
+.header-left {
+  z-index: 2;
+}
+
+/* TITLE DI TENGAH PERFECT */
+.form-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+
+  font-size: 24px;
+  font-weight: 700;
+  color: #ba0403;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+/* ICON */
+.form-title i {
+  font-size: 26px;
+}
+
+/* Style untuk input readonly */
+.jenis-soal-readonly {
+  background-color: #f8f9fa !important;
+  color: #1e293b !important;
+  font-weight: 500;
+  border: 1.5px solid #e2e8f0 !important;
+  cursor: default;
+}
+
+.jenis-soal-readonly:focus {
+  border-color: #e2e8f0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}

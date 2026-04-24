@@ -70,6 +70,29 @@ export class NavbarComponent implements OnInit {
     }
     return "Dashboard";
   }
+
+  getTitleHeader() {
+    let url = this.location.prepareExternalUrl(this.location.path());
+
+    if (url.charAt(0) === "#") {
+      url = url.slice(1);
+    }
+
+    for (let item of this.listTitles) {
+      const routePath = item.path;
+
+      // ✅ ubah :param jadi regex
+      const regexPath = routePath.replace(/:\w+/g, "[^/]+");
+      const regex = new RegExp("^" + regexPath + "$");
+
+      if (regex.test(url)) {
+        return item.headerTitle || item.title;
+      }
+    }
+
+    return "Dashboard";
+  }
+
   sidebarToggle() {
     if (this.sidebarVisible === false) {
       this.sidebarOpen();

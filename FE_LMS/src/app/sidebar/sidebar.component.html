@@ -2,7 +2,10 @@
   <div class="logo">
     <a href="" class="simple-text logo-mini">
       <div class="logo-image-small">
-        <img src="assets/img/angular2-logo.png" />
+        <img
+          src="assets/img/LogoSRI_CROP.jpeg"
+          style="transform: scale(0.65) translateY(-7px)"
+        />
       </div>
     </a>
     <a href="" class="simple-text logo-normal">
@@ -12,11 +15,10 @@
   <ul class="nav">
     <li
       *ngFor="let menuItem of menuItems"
-      routerLinkActive="active"
-      class="{{ menuItem.class }}"
+      [ngClass]="[menuItem.class, isActive(menuItem.path) ? 'active' : '']"
     >
-      <a [routerLink]="[menuItem.path]">
-        <i class="nc-icon {{ menuItem.icon }}"></i>
+      <a [routerLink]="menuItem.path">
+        <i class="nc-icon" [ngClass]="menuItem.icon"></i>
         <p>{{ menuItem.title }}</p>
       </a>
     </li>

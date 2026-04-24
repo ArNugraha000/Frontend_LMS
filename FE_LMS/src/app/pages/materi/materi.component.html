@@ -1,0 +1,352 @@
+<!-- ================= CARD MENU ================= -->
+<div class="menu-container">
+  <div class="menu-card" (click)="goTo('profil')">
+    <div class="menu-text">
+      <span class="menu-sub">Profil Saya</span>
+      <span class="menu-title">Profil</span>
+    </div>
+    <div class="menu-icon blue">
+      <i class="bi bi-person"></i>
+    </div>
+  </div>
+
+  <div class="menu-card" (click)="goTo('beranda')">
+    <div class="menu-text">
+      <span class="menu-sub">Beranda</span>
+      <span class="menu-title">Beranda</span>
+    </div>
+    <div class="menu-icon red">
+      <i class="bi bi-grid"></i>
+    </div>
+  </div>
+
+  <div class="menu-card" (click)="goTo('materi')">
+    <div class="menu-text">
+      <span class="menu-sub">Tambah Materi</span>
+      <span class="menu-title">Materi</span>
+    </div>
+    <div class="menu-icon red">
+      <i class="bi bi-file-earmark-plus-fill"></i>
+    </div>
+  </div>
+
+  <div class="menu-card" (click)="goTo('pelatihan')">
+    <div class="menu-text">
+      <span class="menu-sub">Transaksi Pelatihan</span>
+      <span class="menu-title">Per-Batch</span>
+    </div>
+    <div class="menu-icon red">
+      <i class="bi bi-folder2-open"></i>
+    </div>
+  </div>
+</div>
+
+<!-- LIST -->
+<div class="wrapper-white">
+  <div class="list-header">
+    <input
+      type="text"
+      placeholder="Search training..."
+      [(ngModel)]="searchText"
+      (input)="onSearch()"
+      class="search-input"
+    />
+    <div class="data-count">Total Data: {{ filteredData.length }}</div>
+  </div>
+
+  <div class="course-list">
+    <div class="course-card" *ngFor="let item of pagedData">
+      <!-- ICON -->
+      <div class="course-image">
+        <i [class]="getIcon(item.jenisMateri)"></i>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="course-content">
+        <div class="course-title">{{ item.judulMateri }}</div>
+
+        <span class="badge-online">
+          {{ item.jenisMateri }}
+        </span>
+
+        <div class="course-duration">
+          <!-- PRETEST / POSTTEST -->
+          <ng-container *ngIf="isTest(item.jenisMateri); else materiBiasa">
+            Waktu {{ getLabelTest(item.jenisMateri) }} :
+            {{ formatWaktu(item.waktuQuiz) }}
+          </ng-container>
+
+          <!-- MATERI BIASA -->
+          <ng-template #materiBiasa>
+            Waktu Melihat materi : {{ formatWaktu(item.waktuMelihat) }}<br />
+            Waktu Mengerjakan Quiz : {{ formatWaktu(item.waktuQuiz) }}
+          </ng-template>
+        </div>
+
+        <!-- ACTION -->
+        <div class="course-actions">
+          <button class="btn-icon" (click)="openEditModal(item)">
+            <i class="bi bi-pencil"></i>
+          </button>
+
+          <button class="btn-icon" (click)="delete(item.id, item)">
+            <i class="bi bi-trash"></i>
+          </button>
+
+          <button
+            class="btn-icon"
+            *ngIf="!isTest(item.jenisMateri)"
+            (click)="goToQuiz(item.id)"
+          >
+            <i class="bi bi-patch-question"></i>
+          </button>
+
+          <!-- KHUSUS PRETEST / POSTTEST -->
+          <button
+            class="btn-modern"
+            *ngIf="isTest(item.jenisMateri)"
+            (click)="goToQuiz(item.id)"
+          >
+            <i class="bi bi-clipboard-plus">
+              {{ getLabelTest(item.jenisMateri) }}
+            </i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="pagedData.length === 0" class="empty-state">
+    Tidak ada data materi
+  </div>
+
+  <div class="pagination-wrapper">
+    <!-- LEFT -->
+    <select
+      class="page-select"
+      [(ngModel)]="pageSize"
+      (change)="onPageSizeChange()"
+    >
+      <option *ngFor="let opt of pageSizeOptions" [ngValue]="opt">
+        {{ opt }}
+      </option>
+    </select>
+
+    <!-- RIGHT -->
+    <div class="pagination-right">
+      <button
+        class="btn-page"
+        (click)="prevPage()"
+        [disabled]="currentPage === 1"
+      >
+        PREV
+      </button>
+
+      <span class="page-info"> {{ currentPage }} / {{ totalPages }} </span>
+
+      <button
+        class="btn-page"
+        [ngClass]="{ active: currentPage < totalPages }"
+        (click)="nextPage()"
+        [disabled]="currentPage === totalPages"
+      >
+        NEXT
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3>
+        <i
+          class="bi"
+          [class.bi-plus-circle-fill]="!isEditMode"
+          [class.bi-pencil-square]="isEditMode"
+        ></i>
+        {{ isEditMode ? "Edit Materi" : "Tambah Materi" }}
+      </h3>
+      <span class="modal-close" (click)="closeModal()">&times;</span>
+    </div>
+
+    <div class="modal-body-landscape">
+      <!-- Row 1: Jenis Materi & File Upload (2 kolom) -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Pilih Jenis Materi <span class="required">*</span></label>
+          <select
+            class="form-select"
+            [(ngModel)]="formData.jenisMateri"
+            (change)="onJenisMateriChange()"
+          >
+            <option *ngFor="let opt of jenisMateriOptions" [value]="opt.value">
+              {{ opt.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- HANYA TAMPIL jika BUKAN Pre-Test/Post-Test -->
+        <div class="form-group" *ngIf="!isTest(formData.jenisMateri)">
+          <label>Tarik Berkas dokumen / pilih berkas</label>
+          <div class="file-upload-area" (click)="fileInput.click()">
+            <i class="bi bi-cloud-upload"></i>
+            <span>{{ fileName || "Klik atau tarik berkas ke sini" }}</span>
+            <input
+              type="file"
+              #fileInput
+              (change)="onFileSelected($event)"
+              style="display: none"
+              accept=".pdf,.ppt,.pptx,.mp4,.jpg,.png,.txt,.doc,.docx"
+            />
+          </div>
+          <div class="file-info" *ngIf="fileName">
+            <i class="bi bi-file-earmark-check"></i> {{ fileName }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Judul Materi (full width) -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Judul Materi <span class="required">*</span></label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="formData.judulMateri"
+            placeholder="Masukkan judul materi"
+          />
+        </div>
+      </div>
+
+      <!-- Row 3: Informasi materi & Link (2 kolom) -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Isi Materi <span class="required">*</span></label>
+          <textarea
+            class="form-control"
+            rows="4"
+            [(ngModel)]="formData.isiMateri"
+            placeholder="Masukkan materi inti / konten utama di sini..."
+          ></textarea>
+          <small class="text-muted">
+            <i class="bi bi-file-text"></i> Konten utama materi yang akan
+            dipelajari
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Informasi Materi</label>
+          <textarea
+            class="form-control"
+            rows="4"
+            [(ngModel)]="formData.informasiMateri"
+            placeholder="Informasi tambahan, catatan, atau referensi..."
+          ></textarea>
+          <small class="text-muted">
+            <i class="bi bi-info-circle"></i> Informasi pendukung (opsional)
+          </small>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <!-- ✅ KASUS PRETEST / POSTTEST - LETAKKAN DISINI -->
+        <ng-container *ngIf="isTest(formData.jenisMateri)">
+          <div class="form-group">
+            <label
+              >Durasi {{ getTestLabel(formData.jenisMateri) }}
+              <span class="required">*</span></label
+            >
+            <div class="time-input">
+              <input
+                type="number"
+                class="form-control"
+                [(ngModel)]="formData.waktuQuiz"
+                name="waktuQuiz"
+                min="1"
+                placeholder="Masukkan durasi dalam menit"
+              />
+              <span class="time-unit">menit</span>
+            </div>
+            <small class="text-muted">
+              <i class="bi bi-hourglass-split"></i>
+              Durasi untuk menyelesaikan
+              {{ getTestLabel(formData.jenisMateri) }}
+            </small>
+          </div>
+
+          <div class="form-group">
+            <div class="info-box">
+              <i class="bi bi-info-circle-fill"></i>
+              <small>
+                Untuk tipe {{ getTestLabel(formData.jenisMateri) }}, waktu yang
+                diisi akan digunakan sebagai durasi pengerjaan. <br />
+                Soal akan terintegrasi dengan
+                {{ getTestLabel(formData.jenisMateri) }} ini.
+              </small>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- ✅ KASUS MATERI BIASA (bukan Pre-Test/Post-Test) -->
+        <ng-container *ngIf="!isTest(formData.jenisMateri)">
+          <div class="form-group">
+            <label>Durasi Melihat Materi <span class="required">*</span></label>
+            <div class="time-input">
+              <input
+                type="number"
+                class="form-control"
+                [(ngModel)]="formData.waktuMelihat"
+                name="waktuMelihat"
+                min="0"
+              />
+              <span class="time-unit">menit</span>
+            </div>
+            <small class="text-muted">
+              <i class="bi bi-clock"></i> Durasi untuk melihat materi
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label>Durasi Mengerjakan Quiz</label>
+            <div class="time-input">
+              <input
+                type="number"
+                class="form-control"
+                [(ngModel)]="formData.waktuQuiz"
+                name="waktuQuiz"
+                min="0"
+              />
+              <span class="time-unit">menit</span>
+            </div>
+            <small class="text-muted">
+              <i class="bi bi-hourglass-split"></i> Opsional, untuk materi yang
+              memiliki quiz
+            </small>
+          </div>
+        </ng-container>
+      </div>
+      <!-- ========== END ROW 4 ========== -->
+
+      <hr />
+      <small class="text-muted">
+        <i class="bi bi-info-circle"></i>
+        <span *ngIf="isTest(formData.jenisMateri)">
+          Untuk tipe {{ getTestLabel(formData.jenisMateri) }}, isi waktu sesuai
+          durasi ujian dalam menit.
+        </span>
+        <span *ngIf="!isTest(formData.jenisMateri)">
+          Waktu dalam menit. Isi 0 jika tidak ada batasan waktu.
+        </span>
+      </small>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-batal" (click)="closeModal()">Batal</button>
+      <button class="btn-simpan" (click)="saveMateri()" [disabled]="isSaving">
+        <span *ngIf="!isSaving">Simpan</span>
+        <span *ngIf="isSaving">Menyimpan...</span>
+      </button>
+    </div>
+  </div>
+</div>

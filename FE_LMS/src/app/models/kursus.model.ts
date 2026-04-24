@@ -3,12 +3,13 @@ export interface Kursus {
   krsNama: string;
   krsJenis: string;
   krsDeskripsi: string;
-
+  krsSasaran: string;
   krsGambar: string;
-
-  krsCreateDate: string;
-  krsCreateBy: string;
-
-  krsPublishStatus: number;
+  krsGambarUrl?: string;
   krsStatus: number;
+  krsPublishStatus: number;
+  krsCreateBy: string;
+  krsCreateDate: string;
+  krsModifBy: string;
+  krsModifDate: string;
 }

@@ -1,0 +1,746 @@
+/* ================= QUIZ SOAL LIST STYLES ================= */
+.wrapper-white {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  margin: 20px;
+  min-height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ba0403;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-title i {
+  font-size: 28px;
+}
+
+/* Modern Button */
+.btn-modern {
+  background: linear-gradient(135deg, #ba0403, #8e0302);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 40px;
+  font-weight: 600;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(186, 4, 3, 0.3);
+}
+
+.btn-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(186, 4, 3, 0.4);
+  filter: brightness(1.05);
+}
+
+.btn-modern:active {
+  transform: scale(0.97);
+}
+
+/* Soal List */
+.soal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.soal-card {
+  background: #f8f9fb;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  transition: all 0.2s ease;
+  border: 1px solid #edf2f7;
+}
+
+.soal-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border-color: #ba040320;
+}
+
+/* Nomor & Poin */
+.soal-number {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 70px;
+}
+
+.nomor-badge {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #ba0403, #8e0302);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 20px;
+  box-shadow: 0 4px 10px rgba(186, 4, 3, 0.3);
+}
+
+.poin-badge {
+  background: #fff3cd;
+  color: #856404;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.poin-badge i {
+  font-size: 10px;
+  color: #ffc107;
+}
+
+/* Soal Content */
+.soal-content {
+  flex: 1;
+}
+
+.soal-teks {
+  font-size: 15px;
+  color: #1e293b;
+  line-height: 1.5;
+  margin: 0 0 10px 0;
+}
+
+.jawaban-benar {
+  font-size: 13px;
+  color: #2e7d32;
+  background: #e8f5e9;
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.jawaban-benar i {
+  font-size: 12px;
+  margin-right: 4px;
+}
+
+/* Action Buttons */
+.soal-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-icon-sm {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-icon-sm.edit {
+  background: #e6f0ff;
+  color: #3b82f6;
+}
+
+.btn-icon-sm.edit:hover {
+  background: #3b82f6;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btn-icon-sm.delete {
+  background: #fee2e2;
+  color: #ba0403;
+}
+
+.btn-icon-sm.delete:hover {
+  background: #ba0403;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6c757d;
+}
+
+/* Pagination */
+.pagination-wrapper {
+  margin-top: 24px;
+  padding: 16px 0 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #edf2f7;
+}
+
+.data-count {
+  font-size: 14px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pagination-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-page {
+  background: #f1f5f9;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+  color: #334155;
+}
+
+.btn-page:hover:not(:disabled) {
+  background: #ba0403;
+  color: white;
+}
+
+.btn-page:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+/* Modal Styles (sama dengan materi) */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-container {
+  background: white;
+  width: 500px;
+  max-width: 90%;
+  border-radius: 24px;
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-header {
+  padding: 20px 24px 12px 24px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ba0403;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-close {
+  font-size: 28px;
+  cursor: pointer;
+  color: #999;
+  transition: 0.2s;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.modal-close:hover {
+  color: #ba0403;
+  background: #fef2f2;
+}
+
+.modal-body-landscape {
+  padding: 24px;
+  text-align: center;
+}
+
+.modal-footer {
+  padding: 16px 24px 24px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.btn-batal {
+  background: #f1f5f9;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 40px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #334155;
+  transition: background 0.2s;
+}
+
+.btn-batal:hover {
+  background: #e2e8f0;
+}
+
+.btn-simpan {
+  background: linear-gradient(135deg, #ba0403, #8e0302);
+  border: none;
+  padding: 10px 28px;
+  border-radius: 40px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.btn-simpan:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+@keyframes fadeIn {
+  from {
+    background-color: rgba(0, 0, 0, 0);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .wrapper-white {
+    padding: 16px;
+    margin: 12px;
+  }
+
+  .soal-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .soal-number {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .soal-actions {
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
+
+  /* Tombol Kembali */
+  .btn-back {
+    background: #f1f5f9;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #1e293b;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .btn-back:hover {
+    background: #e2e8f0;
+    transform: translateX(-3px);
+  }
+
+  /* Header dengan tombol kembali */
+  .form-header {
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f2f5;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .form-header .header-left {
+    display: flex;
+    align-items: center;
+  }
+
+  .form-header h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ba0403;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+  }
+
+  /* List Header dengan tombol kembali */
+  .list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .list-header .header-left {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Info Materi Card */
+  .info-materi-card {
+    background: linear-gradient(135deg, #fef2f2, #fff5f5);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid #fecaca;
+    flex-wrap: wrap;
+  }
+
+  .info-materi-card .materi-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #ba0403, #8e0302);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .info-materi-card .materi-icon i {
+    font-size: 30px;
+    color: white;
+  }
+
+  .info-materi-card .materi-detail {
+    flex: 1;
+  }
+
+  .info-materi-card .materi-judul {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 8px;
+  }
+
+  .info-materi-card .materi-meta {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .badge-materi {
+    background: #e2e8f0;
+    color: #1e293b;
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .materi-stats {
+    font-size: 13px;
+    color: #64748b;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .materi-stats i {
+    color: #ba0403;
+  }
+}
+.btn-back {
+  background: #f1f5f9;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #334155;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* ICON */
+.btn-back i {
+  font-size: 14px;
+}
+
+/* HOVER */
+.btn-back:hover {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+/* CLICK */
+.btn-back:active {
+  transform: scale(0.96);
+}
+
+/* ================= BANNER MATERI (HERO SECTION) ================= */
+.materi-banner {
+  position: relative;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 24px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(186, 4, 3, 0.9),
+    rgba(142, 3, 2, 0.95)
+  );
+  z-index: 0;
+}
+
+.banner-content {
+  position: relative;
+  z-index: 1;
+  padding: 24px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  color: white;
+}
+
+.banner-icon {
+  width: 70px;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+.banner-icon i {
+  font-size: 36px;
+  color: white;
+}
+
+.banner-info {
+  flex: 1;
+}
+
+.banner-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: white;
+}
+
+.banner-meta {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.banner-badge {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: capitalize;
+}
+
+.banner-stats {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.banner-time {
+  display: flex;
+  gap: 16px;
+}
+
+.time-card {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 12px 20px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 100px;
+}
+
+.time-card i {
+  font-size: 28px;
+  opacity: 0.9;
+}
+
+.time-label {
+  font-size: 11px;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.time-value {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* ================= SECTION DIVIDER ================= */
+.section-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 16px 0 24px 0;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+}
+
+.divider-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+}
+
+.divider-text i {
+  color: #ba0403;
+  font-size: 16px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .banner-content {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .banner-meta {
+    justify-content: center;
+  }
+
+  .banner-time {
+    justify-content: center;
+  }
+
+  .time-card {
+    padding: 8px 16px;
+  }
+
+  .time-value {
+    font-size: 16px;
+  }
+}

@@ -1,0 +1,432 @@
+<!-- <style>
+  /* Container agar sejajar */
+  .action-container {
+    display: flex;
+    align-items: center; /* Vertikal sejajar */
+    gap: 8px; /* Jarak antar tombol dan toggle */
+  }
+
+  /* Toggle Switch */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 24px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 24px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .slider {
+    background-color: #ba0403; /* Warna oranye saat aktif */
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(22px);
+  }
+
+  /* BUTTON +/save/cancel*/
+  .btn-modern,
+  .btn-modern-outline {
+    min-width: 110px;
+    height: 40px;
+    padding: 0 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    box-sizing: border-box; /* penting */
+  }
+  .btn-modern {
+    background: linear-gradient(135deg, #ba0403, #8e0302);
+    color: #fff;
+    border: 2px solid #ba0403; /* samain border */
+    box-shadow: 0 4px 10px rgba(186, 4, 3, 0.3);
+  }
+
+  .btn-modern i {
+    font-size: 14px;
+  }
+
+  /* Hover */
+  .btn-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(186, 4, 3, 0.5);
+    background: linear-gradient(135deg, #d90404, #a60303);
+  }
+
+  /* Click */
+  .btn-modern:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 6px rgba(186, 4, 3, 0.3);
+  }
+
+  /* OUTLINE */
+  .btn-modern-outline {
+    background: #fff;
+    color: #ba0403;
+    border: 2px solid #ba0403;
+  }
+
+  .btn-modern-outline i {
+    font-size: 14px;
+  }
+
+  /* Hover */
+  .btn-modern-outline:hover {
+    background: #ba0403;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(186, 4, 3, 0.4);
+    transform: translateY(-2px);
+  }
+
+  /* Click */
+  .btn-modern-outline:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 6px rgba(186, 4, 3, 0.3);
+  }
+
+  /* === */
+  /* ICON */
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ba0403, #8e0302);
+    color: #fff;
+    border: none;
+    box-shadow: 0 3px 8px rgba(186, 4, 3, 0.3);
+    transition: all 0.2s ease;
+  }
+
+  /* Icon size */
+  .btn-icon i {
+    font-size: 14px;
+  }
+
+  /* Hover */
+  .btn-icon:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 10px rgba(186, 4, 3, 0.4);
+  }
+
+  /* Click */
+  .btn-icon:active {
+    transform: scale(0.95);
+  }
+
+  /* === */
+  /* CIRCLE-BUTTON-ICON */
+  .btn-icon-outline-circle {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%; /* bikin bulat */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: #ba0403;
+    border: 2px solid #ba0403;
+    transition: all 0.25s ease;
+    cursor: pointer;
+  }
+
+  /* Icon */
+  .btn-icon-outline-circle i {
+    font-size: 14px;
+  }
+
+  /* Hover */
+  .btn-icon-outline-circle:hover {
+    background: #ba0403;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(186, 4, 3, 0.4);
+    transform: translateY(-1px);
+  }
+
+  /* Click */
+  .btn-icon-outline-circle:active {
+    transform: scale(0.9);
+  }
+
+  /* === */
+  /* NAV LINK ACTIVE */
+  .nav-link.active .btn-icon-outline-circle {
+    background-color: #ba0403; /* biru bootstrap */
+    color: white;
+    border-color: #ba0403;
+  }
+
+  /* optional: icon ikut putih */
+  .nav-link.active .btn-icon-outline-circle i {
+    color: white;
+  }
+
+  /* BASE aktif/nonaktif*/
+  .badge-custom-active,
+  .badge-custom-outline {
+    padding: 5px 12px;
+    font-size: 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    display: inline-block;
+    text-align: center;
+    min-width: 70px;
+  }
+
+  /* AKTIF (solid merah) */
+  .badge-custom-active {
+    background: #ba0403;
+    color: #fff;
+    border: 1.5px solid #ba0403;
+  }
+
+  /* NON AKTIF (outline merah) */
+  .badge-custom-outline {
+    background: #fff;
+    color: #ba0403;
+    border: 1.5px solid #ba0403;
+  }
+
+  /* btnCLOSE */
+  .btn-close-custom {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  /* icon styling */
+  .btn-close-custom i {
+    font-size: 18px;
+    color: #333;
+  }
+
+  /* hover biar ada efek dikit */
+  .btn-close-custom:hover i {
+    color: #ba0403;
+  }
+
+  /* ==== */
+  /* searchtable */
+  input.form-control {
+    transition: 0.3s;
+  }
+
+  input.form-control:focus {
+    border-color: #ba0403;
+    box-shadow: 0 0 0 0.2rem rgba(186, 4, 3, 0.2);
+  }
+
+  .table-wrapper {
+    min-height: 50vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* pagination stay di bawah */
+  .table-wrapper > div:last-child {
+    margin-top: auto;
+  }
+</style> -->
+
+<!-- SEKSI -->
+<li [ngbNavItem]="'seksi'" class="nav-item">
+  <a ngbNavLink class="nav-link">
+    <div class="step-item">
+      <div class="btn-icon-outline-circle">
+        <i class="bi bi-gear-wide-connected"></i>
+      </div>
+      <div class="step-label">Seksie</div>
+    </div>
+  </a>
+
+  <ng-template ngbNavContent>
+    <div class="tab-content-wrapper">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <button class="btn-modern" (click)="tambah('seksi')">
+          <i class="bi bi-plus-lg"></i> Tambah
+        </button>
+
+        <!-- CENTER: SEARCH -->
+        <div style="width: 300px">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Cari Seksie..."
+            [(ngModel)]="searchSeksi"
+            style="border-radius: 10px"
+          />
+        </div>
+
+        <!-- RIGHT (kosong biar balance) -->
+        <div style="width: 15vh"></div>
+      </div>
+
+      <div class="table-responsive">
+        <div class="mb-3"></div>
+        <table class="table table-striped table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>No</th>
+              <th>Kode</th>
+              <th>Nama</th>
+              <th>Departemen</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of pagedSeksi; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ item.sekJudul }}</td>
+              <td>{{ item.sekNama }}</td>
+              <td>{{ item.depNama }}</td>
+              <td>
+                <span
+                  [ngClass]="
+                    item.sekStatus === 'AKTIF'
+                      ? 'badge-custom-active'
+                      : 'badge-custom-outline'
+                  "
+                >
+                  {{ item.sekStatus }}
+                </span>
+              </td>
+              <td>
+                <div class="action-container">
+                  <!-- EDIT BUTTON -->
+                  <button class="btn-icon" (click)="editSeksie(item)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+
+                  <!-- TOGGLE SWITCH -->
+                  <label class="switch">
+                    <input
+                      type="checkbox"
+                      [checked]="item.sekStatus?.toUpperCase() === 'AKTIF'"
+                      (click)="confirmToggleStatus($event, item, 'seksi')"
+                    />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <select
+        class="form-control"
+        style="width: 120px"
+        [(ngModel)]="pageSizeSeksi"
+        (change)="pageSeksi = 1"
+      >
+        <option *ngFor="let opt of pageSizeOptions" [ngValue]="opt">
+          {{ opt }}
+        </option>
+      </select>
+
+      <div>
+        <button
+          class="btn btn-sm btn-outline-secondary me-2"
+          (click)="pageSeksi = pageSeksi - 1"
+          [disabled]="pageSeksi === 1"
+        >
+          Prev
+        </button>
+
+        {{ pageSeksi }} / {{ totalPagesSeksi }}
+
+        <button
+          class="btn btn-sm btn-outline-secondary ms-2"
+          (click)="pageSeksi = pageSeksi + 1"
+          [disabled]="pageSeksi === totalPagesSeksi"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</li>
+
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+  rel="stylesheet"
+/>
+
+<ng-template #modalDivisi let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">
+      {{ isEditDivisi ? "Edit Divisi" : "Tambah Divisi" }}
+    </h5>
+    <button type="button" class="btn-close-custom" (click)="modal.dismiss()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <div class="mb-3">
+      <label>Kode</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="formDivisi.divJudul"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label>Nama</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="formDivisi.divNama"
+      />
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn-modern-outline" (click)="modal.dismiss()">Batal</button>
+    <button class="btn-modern" (click)="saveDivisi(modal)">
+      {{ isEditDivisi ? "Ubah" : "Simpan" }}
+    </button>
+  </div>
+</ng-template>

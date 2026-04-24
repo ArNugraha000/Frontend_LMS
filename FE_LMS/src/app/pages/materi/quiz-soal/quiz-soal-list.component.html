@@ -1,0 +1,181 @@
+<!-- ================= WRAPPER UTAMA ================= -->
+<div class="wrapper-white">
+  <!-- HEADER DENGAN TOMBOL KEMBALI -->
+  <div class="list-header">
+    <div class="header-left">
+      <button class="btn-back" (click)="kembaliKeMateri()">
+        <i class="bi bi-arrow-left"></i> Kembali
+      </button>
+    </div>
+    <button class="btn-modern" (click)="tambahSoal()">
+      <i class="bi bi-plus-circle"></i> Tambah Soal
+    </button>
+  </div>
+
+  <!-- ================= BANNER INFO MATERI (HERO SECTION) ================= -->
+  <div class="materi-banner" *ngIf="materiInfo">
+    <div class="banner-overlay"></div>
+    <div class="banner-content">
+      <div class="banner-icon">
+        <i class="bi bi-journal-bookmark-fill"></i>
+      </div>
+      <div class="banner-info">
+        <h2 class="banner-title">{{ materiInfo.judulMateri }}</h2>
+        <div class="banner-meta">
+          <span class="banner-badge" [class]="getBadgeClass()">
+            <i
+              class="bi"
+              [class.bi-film]="materiInfo.jenisMateri === 'video'"
+              [class.bi-file-earmark-pdf]="materiInfo.jenisMateri === 'pdf'"
+              [class.bi-file-earmark-ppt]="materiInfo.jenisMateri === 'ppt'"
+              [class.bi-book]="materiInfo.jenisMateri === 'paragraf'"
+              [class.bi-code-slash]="materiInfo.jenisMateri === 'link'"
+              [class.bi-puzzle]="materiInfo.jenisMateri === 'quiz'"
+            ></i>
+            {{ materiInfo.jenisMateri }}
+          </span>
+          <span class="banner-stats">
+            <i class="bi bi-question-circle-fill"></i>
+            {{ soalList.length }} Soal
+          </span>
+          <span class="banner-stats" *ngIf="totalPoin > 0">
+            <i class="bi bi-star-fill"></i> {{ totalPoin }} Poin
+          </span>
+        </div>
+      </div>
+      <div class="banner-time">
+        <ng-container *ngIf="isPretestOrPosttest(); else waktuBiasa">
+          <div class="time-card">
+            <i class="bi bi-hourglass-split"></i>
+            <div>
+              <div class="time-label">{{ getJenisMateriLabel() }}</div>
+              <div class="time-value">{{ materiInfo.waktuQuiz }} menit</div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #waktuBiasa>
+          <div class="time-card" *ngIf="materiInfo.waktuMelihat">
+            <i class="bi bi-clock-history"></i>
+            <div>
+              <div class="time-label">Materi</div>
+              <div class="time-value">{{ materiInfo.waktuMelihat }} menit</div>
+            </div>
+          </div>
+          <div class="time-card" *ngIf="materiInfo.waktuQuiz">
+            <i class="bi bi-hourglass-split"></i>
+            <div>
+              <div class="time-label">Quiz</div>
+              <div class="time-value">{{ materiInfo.waktuQuiz }} menit</div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= DIVIDER ================= -->
+  <div class="section-divider">
+    <span class="divider-line"></span>
+    <span class="divider-text">
+      <i class="bi bi-list-check"></i> Daftar Soal
+    </span>
+    <span class="divider-line"></span>
+  </div>
+
+  <!-- LOADING -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-danger" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2 text-muted">Memuat data soal...</p>
+  </div>
+
+  <!-- LIST SOAL -->
+  <div class="soal-list" *ngIf="!loading">
+    <div class="soal-card" *ngFor="let soal of pagedData; let i = index">
+      <div class="soal-number">
+        <span class="nomor-badge">{{ soal.mqsNomorSoal }}</span>
+        <span class="poin-badge">
+          <i class="bi bi-star-fill"></i> {{ soal.mqsPoin }} Poin
+        </span>
+      </div>
+      <div class="soal-content">
+        <p class="soal-teks">{{ soal.mqsTeksSoal }}</p>
+        <div class="jawaban-benar">
+          <i class="bi bi-check-circle-fill"></i>
+          Jawaban Benar: <strong>{{ soal.mqsJawabanBenar }}</strong>
+        </div>
+      </div>
+      <div class="soal-actions">
+        <button class="btn-icon-sm edit" (click)="editSoal(soal.mqsId)">
+          <i class="bi bi-pencil"></i>
+        </button>
+        <button class="btn-icon-sm delete" (click)="hapusSoal(soal.mqsId)">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="soalList.length === 0" class="empty-state">
+      <i class="bi bi-inbox" style="font-size: 48px; color: #cbd5e1"></i>
+      <p class="mt-3">Belum ada soal untuk materi ini.</p>
+      <button class="btn-modern mt-2" (click)="tambahSoal()">
+        <i class="bi bi-plus-circle"></i> Buat Soal Pertama
+      </button>
+    </div>
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="pagination-wrapper" *ngIf="soalList.length > 0">
+    <div class="data-count">
+      <i class="bi bi-database"></i> Total Soal: {{ soalList.length }}
+    </div>
+    <div class="pagination-right">
+      <button
+        class="btn-page"
+        (click)="prevPage()"
+        [disabled]="currentPage === 1"
+      >
+        PREV
+      </button>
+      <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
+      <button
+        class="btn-page"
+        (click)="nextPage()"
+        [disabled]="currentPage === totalPages"
+      >
+        NEXT
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL KONFIRMASI HAPUS -->
+<div class="modal-overlay" *ngIf="showDeleteModal">
+  <div class="modal-container" style="max-width: 450px">
+    <div class="modal-header">
+      <h3><i class="bi bi-exclamation-triangle-fill"></i> Konfirmasi Hapus</h3>
+      <span class="modal-close" (click)="closeDeleteModal()">&times;</span>
+    </div>
+    <div class="modal-body-landscape text-center">
+      <i
+        class="bi bi-question-circle"
+        style="font-size: 64px; color: #ba0403"
+      ></i>
+      <p class="mt-3">Yakin ingin menghapus soal ini?</p>
+      <p class="text-muted small">
+        Semua pilihan jawaban juga akan ikut terhapus.
+      </p>
+    </div>
+    <div class="modal-footer" style="justify-content: center">
+      <button class="btn-batal" (click)="closeDeleteModal()">Batal</button>
+      <button
+        class="btn-simpan"
+        style="background: #ba0403"
+        (click)="confirmDelete()"
+      >
+        <i class="bi bi-trash"></i> Hapus
+      </button>
+    </div>
+  </div>
+</div>

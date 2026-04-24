@@ -18,6 +18,11 @@ import { LogoutComponent } from "../../pages/logout/logout.component";
 import { ConfigurationComponent } from "../../pages/configuration/configuration.component";
 import { PengajuanformL3Component } from "../../pages/pengajuanformL3/pengajuanformL3.component";
 import { PendaftaranComponent } from "../../pages/pendaftaran/pendaftaran.component";
+import { MateriComponent } from "../../pages/materi/materi.component";
+import { QuizSoalFormComponent } from "../../pages/materi/quiz-soal-form/quiz-soal-form.component";
+import { QuizSoalListComponent } from "../../pages/materi/quiz-soal/quiz-soal-list.component";
+import { ManageTrainingComponent } from "../../pages/managetraining/manage-training.component";
+
 export const AdminLayoutRoutes: Routes = [
   { path: "dashboard", component: DashboardComponent },
   { path: "user", component: UserComponent },
@@ -37,6 +42,9 @@ export const AdminLayoutRoutes: Routes = [
   { path: "configuration", component: ConfigurationComponent },
   { path: "pengajuanforml3", component: PengajuanformL3Component },
   { path: "pendaftaran", component: PendaftaranComponent },
-
-  ,
+  { path: "materi", component: MateriComponent },
+  { path: "quiz-list/:materiId", component: QuizSoalListComponent },
+  { path: "quiz-soal/:materiId", component: QuizSoalFormComponent },
+  { path: "quiz-soal/:materiId/:soalId", component: QuizSoalFormComponent },
+  { path: "manage-training", component: ManageTrainingComponent },
 ];

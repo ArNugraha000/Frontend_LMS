@@ -1,0 +1,207 @@
+<div class="container">
+  <div class="form-container">
+    <!-- HEADER DENGAN TOMBOL KEMBALI -->
+    <div class="form-header">
+      <div class="header-left">
+        <button class="btn-back" (click)="kembali()">
+          <i class="bi bi-arrow-left"></i> Kembali
+        </button>
+      </div>
+
+      <h3 class="form-title">
+        <i
+          [class]="
+            isEditMode ? 'bi bi-pencil-square' : 'bi bi-plus-circle-fill'
+          "
+        ></i>
+        {{ isEditMode ? "Edit Soal" : "Tambah Soal Baru" }}
+      </h3>
+    </div>
+
+    <form class="two-column-layout">
+      <!-- KOLOM KIRI: Informasi Soal -->
+      <div class="left-column">
+        <div class="card-info">
+          <div class="card-header-info">
+            <i class="bi bi-question-circle"></i>
+            <span>Informasi Soal</span>
+          </div>
+
+          <div class="card-body-info">
+            <div class="mb-3">
+              <label class="form-label"
+                >Nomor Soal <span class="required">*</span></label
+              >
+              <input
+                type="number"
+                class="form-control"
+                [(ngModel)]="soal.mqsNomorSoal"
+                name="nomor"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label class="form-label"
+                >Jenis Soal <span class="required">*</span></label
+              >
+
+              <!-- ✅ Ganti select dengan input readonly -->
+              <input
+                type="text"
+                class="form-control jenis-soal-readonly"
+                [value]="
+                  soal.mqsJenis === 'PRETEST'
+                    ? 'Pre-Test'
+                    : soal.mqsJenis === 'POSTTEST'
+                      ? 'Post-Test'
+                      : 'Quiz'
+                "
+                readonly
+                disabled
+              />
+
+              <!-- Info bahwa jenis soal otomatis dari materi -->
+              <div class="info-lock">
+                <i class="bi bi-info-circle-fill"></i>
+                <small>
+                  Jenis soal otomatis ditentukan dari jenis materi:
+                  <strong>{{ materiInfo?.jenisMateri || "-" }}</strong>
+                </small>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label"
+                >Teks Soal <span class="required">*</span></label
+              >
+              <textarea
+                class="form-control"
+                rows="5"
+                [(ngModel)]="soal.mqsTeksSoal"
+                name="teks"
+                placeholder="Masukkan teks soal di sini..."
+              ></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Poin</label>
+              <input
+                type="number"
+                class="form-control"
+                [(ngModel)]="soal.mqsPoin"
+                name="poin"
+                min="1"
+                max="100"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KOLOM KANAN: Pilihan Jawaban -->
+      <div class="right-column">
+        <div class="card-info">
+          <div class="card-header-info">
+            <i class="bi bi-list-check"></i>
+            <span>Pilihan Jawaban</span>
+            <button
+              type="button"
+              class="btn-tambah-pilihan-small"
+              (click)="tambahPilihan()"
+              [disabled]="pilihanList.length >= maxPilihan"
+            >
+              <i class="bi bi-plus-circle"></i> Tambah
+            </button>
+          </div>
+
+          <div class="card-body-info">
+            <!-- Daftar Pilihan Jawaban -->
+            <div class="pilihan-list-container">
+              <div
+                class="pilihan-item"
+                *ngFor="let p of pilihanList; let i = index"
+              >
+                <div class="pilihan-kode-wrapper">
+                  <span class="pilihan-kode-badge">{{ p.qqpKodePilihan }}</span>
+                </div>
+                <div class="pilihan-teks-wrapper">
+                  <input
+                    type="text"
+                    class="form-control pilihan-input"
+                    [(ngModel)]="p.qqpTeksPilihan"
+                    [name]="'pilih' + i"
+                    placeholder="Masukkan teks pilihan {{ p.qqpKodePilihan }}"
+                  />
+                </div>
+                <div class="pilihan-aksi-wrapper">
+                  <button
+                    type="button"
+                    class="btn-hapus-pilihan"
+                    (click)="hapusPilihan(i)"
+                    title="Hapus pilihan"
+                    [disabled]="pilihanList.length <= 2"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="info-box" *ngIf="pilihanList.length < 2">
+              <i class="bi bi-info-circle-fill"></i>
+              <small>Minimal 2 pilihan jawaban diperlukan</small>
+            </div>
+
+            <div
+              class="info-box info-box-success"
+              *ngIf="pilihanList.length >= 2"
+            >
+              <i class="bi bi-check-circle-fill"></i>
+              <small
+                >{{ pilihanList.length }} pilihan jawaban (minimal 2 sudah
+                terpenuhi)</small
+              >
+            </div>
+
+            <!-- Jawaban Benar -->
+            <div class="jawaban-benar-section">
+              <label class="form-label"
+                >Jawaban Benar <span class="required">*</span></label
+              >
+              <div class="jawaban-benar-options">
+                <button
+                  type="button"
+                  *ngFor="let p of pilihanList"
+                  class="btn-jawaban-benar"
+                  [class.active]="soal.mqsJawabanBenar === p.qqpKodePilihan"
+                  (click)="soal.mqsJawabanBenar = p.qqpKodePilihan"
+                >
+                  <i
+                    class="bi"
+                    [class.bi-check-circle-fill]="
+                      soal.mqsJawabanBenar === p.qqpKodePilihan
+                    "
+                    [class.bi-circle]="
+                      soal.mqsJawabanBenar !== p.qqpKodePilihan
+                    "
+                  ></i>
+                  {{ p.qqpKodePilihan }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <!-- Tombol Aksi di Bawah -->
+    <div class="btn-actions">
+      <button type="button" class="btn-simpan" (click)="simpan()">
+        <i class="bi bi-check-lg"></i> Simpan
+      </button>
+      <button type="button" class="btn-batal" (click)="batal()">
+        <i class="bi bi-x-lg"></i> Batal
+      </button>
+    </div>
+  </div>
+</div>

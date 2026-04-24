@@ -25,6 +25,10 @@ import { LogoutComponent } from "../../pages/logout/logout.component";
 import { ConfigurationComponent } from "../../pages/configuration/configuration.component";
 import { PengajuanformL3Component } from "../../pages/pengajuanformL3/pengajuanformL3.component";
 import { PendaftaranComponent } from "../../pages/pendaftaran/pendaftaran.component";
+import { MateriComponent } from "../../pages/materi/materi.component";
+import { QuizSoalFormComponent } from "../../pages/materi/quiz-soal-form/quiz-soal-form.component";
+import { QuizSoalListComponent } from "../../pages/materi/quiz-soal/quiz-soal-list.component";
+import { ManageTrainingComponent } from "../../pages/managetraining/manage-training.component";
 
 @NgModule({
   imports: [
@@ -54,6 +58,10 @@ import { PendaftaranComponent } from "../../pages/pendaftaran/pendaftaran.compon
     ConfigurationComponent,
     PengajuanformL3Component,
     PendaftaranComponent,
+    MateriComponent,
+    QuizSoalFormComponent,
+    QuizSoalListComponent,
+    ManageTrainingComponent,
   ],
 })
 export class AdminLayoutModule {}
