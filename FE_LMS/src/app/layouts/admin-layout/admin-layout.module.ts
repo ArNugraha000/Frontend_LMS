@@ -3,7 +3,7 @@ import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms"; // 👈 UPDATE
 import { NgSelectModule } from "@ng-select/ng-select";
-
+import { NgbNavModule } from "@ng-bootstrap/ng-bootstrap";
 import { AdminLayoutRoutes } from "./admin-layout.routing";
 
 import { DashboardComponent } from "../../pages/dashboard/dashboard.component";
@@ -23,7 +23,7 @@ import { LandingPageComponent } from "../../general-pages/landing-page/landingpa
 import { CreateAccountComponent } from "../../general-pages/create-account/createaccount.component";
 import { LogoutComponent } from "../../pages/logout/logout.component";
 import { ConfigurationComponent } from "../../pages/configuration/configuration.component";
-import { PengajuanformL3Component } from "../../pages/pengajuanformL3/pengajuanformL3.component";
+import { PengajuanformL3Component } from "../../pages/pengajuanform-l3/pengajuanform-l3.component";
 import { PendaftaranComponent } from "../../pages/pendaftaran/pendaftaran.component";
 import { MateriComponent } from "../../pages/materi/materi.component";
 import { QuizSoalFormComponent } from "../../pages/materi/quiz-soal-form/quiz-soal-form.component";
@@ -39,6 +39,7 @@ import { ManageTrainingComponent } from "../../pages/managetraining/manage-train
     NgbModule,
     FormsModule,
     NgSelectModule,
+    NgbNavModule,
   ],
   declarations: [
     DashboardComponent,
