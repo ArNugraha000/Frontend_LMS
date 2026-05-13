@@ -1,0 +1,359 @@
+<div class="wrapper-white">
+  <!-- HEADER dengan Info ID Pelatihan -->
+  <div class="list-header">
+    <div>
+      <h2>Training Deskripsi</h2>
+      <div class="training-info">
+        <span class="badge-info">ID Pelatihan: {{ idKursus }}</span>
+        <span class="badge-info">Total Materi: {{ materi.length }}</span>
+      </div>
+    </div>
+    <!-- 🔥 PERBAIKI: Tambahkan (click)="goBack()" -->
+    <button class="btn-icon" (click)="goBack()">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+  </div>
+
+  <!-- CARD TRAINING -->
+  <div class="course-card">
+    <div class="course-left">
+      <div class="course-image">
+        <img src="assets/training.jpg" class="course-img" />
+      </div>
+      <div class="course-content">
+        <span class="badge-online badge-published">Online</span>
+        <div class="course-title">Astra Basic Management Program</div>
+        <div class="course-duration">
+          <span class="course-type"> <i class="bi bi-book"></i> 10 Teori </span>
+          <span class="course-type">
+            <i class="bi bi-check-circle"></i> Pre & Post Test
+          </span>
+        </div>
+        <div class="course-date mt-2">
+          <i class="bi bi-clock"></i> Waktu Pelatihan: 3 Hari
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <div class="menu-card mt-3">
+    <div class="menu-text">
+      <div class="menu-title">Informasi</div>
+      <div class="menu-sub">
+        Peserta tidak diperbolehkan meninggalkan sesi training sebelum selesai
+      </div>
+    </div>
+  </div>
+
+  <div class="data-count">{{ selectedItems.length }} dipilih</div>
+
+  <!-- HEADER KONTEN -->
+  <div class="list-header mt-3">
+    <h3>Training Konten</h3>
+    <div class="filter-buttons">
+      <button
+        class="btn-modern"
+        (click)="openEditSelected()"
+        [class.disabled-btn]="isEditDisabled"
+        [disabled]="isEditDisabled"
+      >
+        <i class="bi bi-pencil"></i> Ubah
+      </button>
+      <!-- 🔥 PERBAIKI: Ganti dari hapusSelected() menjadi openHapusModal() -->
+      <button
+        class="btn-modern"
+        (click)="openHapusModal()"
+        [class.disabled-btn]="isDeleteDisabled"
+        [disabled]="isDeleteDisabled"
+      >
+        <i class="bi bi-trash"></i> Hapus
+      </button>
+    </div>
+  </div>
+
+  <!-- LIST MATERI - TAMPILKAN ID MATERI -->
+  <div class="course-list">
+    <div class="course-card" *ngFor="let item of materi; let i = index">
+      <div style="display: flex; align-items: flex-start; padding-top: 6px">
+        <input type="checkbox" [(ngModel)]="item.checked" />
+      </div>
+      <div class="course-left">
+        <div class="menu-icon blue">
+          <i class="bi" [ngClass]="item.icon"></i>
+        </div>
+        <div class="course-content">
+          <div class="course-title">
+            {{ i + 1 }}. {{ item.judulMateri }}
+            <span class="badge-id">ID: {{ item.idMateri }}</span>
+          </div>
+          <div class="course-duration">
+            <span class="course-type">
+              <i class="bi bi-clock"></i>
+              {{ item.durasi }}
+            </span>
+            <span class="course-date">
+              <i class="bi bi-calendar"></i>
+              Urutan: {{ item.urutan }}
+            </span>
+            <span class="course-date" *ngIf="item.id">
+              <i class="bi bi-hash"></i>
+              Detail ID: {{ item.id }}
+            </span>
+          </div>
+          <p class="mt-2" style="font-size: 13px; color: #64748b">
+            {{ item.informasiMateri }}
+          </p>
+
+          <!-- Tampilkan tanggal akses -->
+          <div
+            class="access-dates"
+            *ngIf="item.tanggalMulai || item.tanggalAkhir"
+          >
+            <small *ngIf="item.tanggalMulai">
+              <i class="bi bi-calendar-check"></i> Mulai:
+              {{ item.tanggalMulai | date: "dd/MM/yyyy HH:mm" }}
+            </small>
+            <small *ngIf="item.tanggalAkhir">
+              <i class="bi bi-calendar-x"></i> Batas:
+              {{ item.tanggalAkhir | date: "dd/MM/yyyy HH:mm" }}
+            </small>
+          </div>
+
+          <div class="course-actions">
+            <button class="btn-modern" *ngIf="item.type === 'video'">
+              <i class="bi bi-play"></i> Lihat
+            </button>
+            <button class="btn-modern" *ngIf="item.type === 'quiz'">
+              <i class="bi bi-pencil"></i> Mulai
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD BUTTONS -->
+  <div
+    style="
+      margin-top: 20px;
+      text-align: center;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    "
+  >
+    <button class="btn-modern" (click)="openAddModal()">
+      <i class="bi bi-plus"></i> Tambah Materi ke Pelatihan
+    </button>
+    <!-- 🔥 PERBAIKI: Ganti dari hapusSemua() menjadi openHapusSemuaModal() -->
+    <button
+      class="btn-modern btn-danger"
+      (click)="openHapusSemuaModal()"
+      *ngIf="materi.length > 0"
+    >
+      <i class="bi bi-trash"></i> Hapus Semua
+    </button>
+  </div>
+</div>
+
+<!-- MODAL - TAMPILKAN ID MATERI -->
+<div class="modal-overlay" *ngIf="showModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3>
+        <i class="bi" [ngClass]="mode === 'add' ? 'bi-plus' : 'bi-pencil'"></i>
+        {{
+          mode === "add"
+            ? "Tambah Materi ke Pelatihan"
+            : "Edit Detail Pelatihan"
+        }}
+      </h3>
+      <span class="modal-close" (click)="closeModal()">×</span>
+    </div>
+
+    <div class="modal-body-landscape">
+      <!-- Info ID Pelatihan -->
+      <div class="info-box">
+        <strong>ID Pelatihan Aktif:</strong> {{ idKursus }}
+      </div>
+
+      <div class="form-row" *ngIf="mode === 'add'">
+        <div class="form-group">
+          <label>Pilih Materi</label>
+          <select
+            class="form-select"
+            [(ngModel)]="selectedMateri.idMateri"
+            (change)="onMateriChange()"
+          >
+            <option [value]="null">-- Pilih Materi --</option>
+            <option *ngFor="let m of allMateri" [value]="m.id">
+              [ID: {{ m.id }}] {{ m.judulMateri }} ({{ m.jenisMateri }})
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tampilkan ID Materi untuk mode edit -->
+      <div class="form-row" *ngIf="mode === 'edit'">
+        <div class="form-group">
+          <label>ID Materi</label>
+          <input
+            type="text"
+            class="form-control"
+            [value]="selectedMateri.idMateri"
+            disabled
+          />
+        </div>
+        <div class="form-group">
+          <label>ID Detail</label>
+          <input
+            type="text"
+            class="form-control"
+            [value]="selectedMateri.id"
+            disabled
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Urutan</label>
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="selectedMateri.urutan"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tanggal Mulai Akses</label>
+          <input
+            type="datetime-local"
+            class="form-control"
+            [(ngModel)]="selectedMateri.tanggalMulai"
+          />
+        </div>
+        <div class="form-group">
+          <label>Tanggal Akhir Akses (Batas)</label>
+          <input
+            type="datetime-local"
+            class="form-control"
+            [(ngModel)]="selectedMateri.tanggalAkhir"
+          />
+        </div>
+      </div>
+
+      <div class="preview-card" *ngIf="selectedMateri.idMateri">
+        <h4>Preview Materi</h4>
+        <p><strong>ID Materi:</strong> {{ selectedMateri.idMateri }}</p>
+        <p><strong>Judul:</strong> {{ selectedMateri.judulMateri }}</p>
+        <p><strong>Jenis:</strong> {{ selectedMateri.jenisMateri }}</p>
+        <p><strong>Informasi:</strong> {{ selectedMateri.informasiMateri }}</p>
+        <p><strong>Durasi:</strong> {{ selectedMateri.durasi }}</p>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-batal" (click)="closeModal()">Batal</button>
+      <button
+        class="btn-simpan"
+        (click)="mode === 'add' ? simpanDetail() : updateDetail()"
+      >
+        {{ mode === "add" ? "Tambah ke Pelatihan" : "Update Detail" }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 🔥 MODAL KONFIRMASI HAPUS MATERI (PER ITEM) -->
+<div class="modal-overlay" *ngIf="showHapusModal">
+  <div class="modal-container" style="max-width: 450px">
+    <div class="modal-header">
+      <h3><i class="bi bi-exclamation-triangle-fill"></i> Konfirmasi Hapus</h3>
+      <span class="modal-close" (click)="closeHapusModal()">&times;</span>
+    </div>
+    <div class="modal-body-landscape" style="text-align: center">
+      <i
+        class="bi bi-trash3-fill"
+        style="
+          font-size: 64px;
+          color: #dc3545;
+          margin-bottom: 16px;
+          display: block;
+        "
+      ></i>
+      <p style="font-size: 16px; font-weight: 500; margin-bottom: 8px">
+        Hapus Materi dari Pelatihan?
+      </p>
+      <p class="text-muted" style="font-size: 13px; color: #64748b">
+        {{ selectedItems.length }} materi akan dihapus dari pelatihan ini!
+      </p>
+      <p
+        class="text-muted"
+        style="font-size: 12px; color: #dc3545; margin-top: 8px"
+      >
+        <i class="bi bi-exclamation-circle"></i> Data yang dihapus tidak dapat
+        dikembalikan!
+      </p>
+    </div>
+    <div class="modal-footer" style="justify-content: center">
+      <button class="btn-batal" (click)="closeHapusModal()">Batal</button>
+      <button
+        class="btn-simpan"
+        style="background: linear-gradient(135deg, #dc3545, #c82333)"
+        (click)="confirmHapus()"
+      >
+        <i class="bi bi-trash"></i> Hapus
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 🔥 MODAL KONFIRMASI HAPUS SEMUA MATERI -->
+<div class="modal-overlay" *ngIf="showHapusSemuaModal">
+  <div class="modal-container" style="max-width: 450px">
+    <div class="modal-header">
+      <h3>
+        <i class="bi bi-exclamation-triangle-fill"></i> Konfirmasi Hapus Semua
+      </h3>
+      <span class="modal-close" (click)="closeHapusSemuaModal()">&times;</span>
+    </div>
+    <div class="modal-body-landscape" style="text-align: center">
+      <i
+        class="bi bi-trash3-fill"
+        style="
+          font-size: 64px;
+          color: #dc3545;
+          margin-bottom: 16px;
+          display: block;
+        "
+      ></i>
+      <p style="font-size: 16px; font-weight: 500; margin-bottom: 8px">
+        Hapus Semua Materi?
+      </p>
+      <p class="text-muted" style="font-size: 13px; color: #64748b">
+        SEMUA materi akan dihapus dari pelatihan ini!
+      </p>
+      <p
+        class="text-muted"
+        style="font-size: 12px; color: #dc3545; margin-top: 8px"
+      >
+        <i class="bi bi-exclamation-circle"></i> Tindakan ini tidak dapat
+        dibatalkan!
+      </p>
+    </div>
+    <div class="modal-footer" style="justify-content: center">
+      <button class="btn-batal" (click)="closeHapusSemuaModal()">Batal</button>
+      <button
+        class="btn-simpan"
+        style="background: linear-gradient(135deg, #dc3545, #c82333)"
+        (click)="confirmHapusSemua()"
+      >
+        <i class="bi bi-trash"></i> Hapus Semua
+      </button>
+    </div>
+  </div>
+</div>

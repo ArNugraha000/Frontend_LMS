@@ -1,432 +1,476 @@
-<!-- <style>
-  /* Container agar sejajar */
-  .action-container {
-    display: flex;
-    align-items: center; /* Vertikal sejajar */
-    gap: 8px; /* Jarak antar tombol dan toggle */
-  }
-
-  /* Toggle Switch */
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 46px;
-    height: 24px;
-  }
-
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: 0.4s;
-    border-radius: 24px;
-  }
-
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: 0.4s;
-    border-radius: 50%;
-  }
-
-  input:checked + .slider {
-    background-color: #ba0403; /* Warna oranye saat aktif */
-  }
-
-  input:checked + .slider:before {
-    transform: translateX(22px);
-  }
-
-  /* BUTTON +/save/cancel*/
-  .btn-modern,
-  .btn-modern-outline {
-    min-width: 110px;
-    height: 40px;
-    padding: 0 16px;
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 10px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    transition: all 0.25s ease;
-    cursor: pointer;
-    box-sizing: border-box; /* penting */
-  }
-  .btn-modern {
-    background: linear-gradient(135deg, #ba0403, #8e0302);
-    color: #fff;
-    border: 2px solid #ba0403; /* samain border */
-    box-shadow: 0 4px 10px rgba(186, 4, 3, 0.3);
-  }
-
-  .btn-modern i {
-    font-size: 14px;
-  }
-
-  /* Hover */
-  .btn-modern:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(186, 4, 3, 0.5);
-    background: linear-gradient(135deg, #d90404, #a60303);
-  }
-
-  /* Click */
-  .btn-modern:active {
-    transform: scale(0.97);
-    box-shadow: 0 2px 6px rgba(186, 4, 3, 0.3);
-  }
-
-  /* OUTLINE */
-  .btn-modern-outline {
-    background: #fff;
-    color: #ba0403;
-    border: 2px solid #ba0403;
-  }
-
-  .btn-modern-outline i {
-    font-size: 14px;
-  }
-
-  /* Hover */
-  .btn-modern-outline:hover {
-    background: #ba0403;
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(186, 4, 3, 0.4);
-    transform: translateY(-2px);
-  }
-
-  /* Click */
-  .btn-modern-outline:active {
-    transform: scale(0.97);
-    box-shadow: 0 2px 6px rgba(186, 4, 3, 0.3);
-  }
-
-  /* === */
-  /* ICON */
-  .btn-icon {
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    border-radius: 8px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #ba0403, #8e0302);
-    color: #fff;
-    border: none;
-    box-shadow: 0 3px 8px rgba(186, 4, 3, 0.3);
-    transition: all 0.2s ease;
-  }
-
-  /* Icon size */
-  .btn-icon i {
-    font-size: 14px;
-  }
-
-  /* Hover */
-  .btn-icon:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 5px 10px rgba(186, 4, 3, 0.4);
-  }
-
-  /* Click */
-  .btn-icon:active {
-    transform: scale(0.95);
-  }
-
-  /* === */
-  /* CIRCLE-BUTTON-ICON */
-  .btn-icon-outline-circle {
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    border-radius: 50%; /* bikin bulat */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: #fff;
-    color: #ba0403;
-    border: 2px solid #ba0403;
-    transition: all 0.25s ease;
-    cursor: pointer;
-  }
-
-  /* Icon */
-  .btn-icon-outline-circle i {
-    font-size: 14px;
-  }
-
-  /* Hover */
-  .btn-icon-outline-circle:hover {
-    background: #ba0403;
-    color: #fff;
-    box-shadow: 0 4px 10px rgba(186, 4, 3, 0.4);
-    transform: translateY(-1px);
-  }
-
-  /* Click */
-  .btn-icon-outline-circle:active {
-    transform: scale(0.9);
-  }
-
-  /* === */
-  /* NAV LINK ACTIVE */
-  .nav-link.active .btn-icon-outline-circle {
-    background-color: #ba0403; /* biru bootstrap */
-    color: white;
-    border-color: #ba0403;
-  }
-
-  /* optional: icon ikut putih */
-  .nav-link.active .btn-icon-outline-circle i {
-    color: white;
-  }
-
-  /* BASE aktif/nonaktif*/
-  .badge-custom-active,
-  .badge-custom-outline {
-    padding: 5px 12px;
-    font-size: 12px;
-    border-radius: 20px;
-    font-weight: 500;
-    display: inline-block;
-    text-align: center;
-    min-width: 70px;
-  }
-
-  /* AKTIF (solid merah) */
-  .badge-custom-active {
-    background: #ba0403;
-    color: #fff;
-    border: 1.5px solid #ba0403;
-  }
-
-  /* NON AKTIF (outline merah) */
-  .badge-custom-outline {
-    background: #fff;
-    color: #ba0403;
-    border: 1.5px solid #ba0403;
-  }
-
-  /* btnCLOSE */
-  .btn-close-custom {
-    background: transparent;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-  }
-
-  /* icon styling */
-  .btn-close-custom i {
-    font-size: 18px;
-    color: #333;
-  }
-
-  /* hover biar ada efek dikit */
-  .btn-close-custom:hover i {
-    color: #ba0403;
-  }
-
-  /* ==== */
-  /* searchtable */
-  input.form-control {
-    transition: 0.3s;
-  }
-
-  input.form-control:focus {
-    border-color: #ba0403;
-    box-shadow: 0 0 0 0.2rem rgba(186, 4, 3, 0.2);
-  }
-
-  .table-wrapper {
-    min-height: 50vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* pagination stay di bawah */
-  .table-wrapper > div:last-child {
-    margin-top: auto;
-  }
-</style> -->
-
-<!-- SEKSI -->
-<li [ngbNavItem]="'seksi'" class="nav-item">
-  <a ngbNavLink class="nav-link">
-    <div class="step-item">
-      <div class="btn-icon-outline-circle">
-        <i class="bi bi-gear-wide-connected"></i>
-      </div>
-      <div class="step-label">Seksie</div>
+<!-- ================= CARD MENU ================= -->
+<div class="menu-container">
+  <div class="menu-card" (click)="goTo('profil')">
+    <div class="menu-text">
+      <span class="menu-sub">Profil Saya</span>
+      <span class="menu-title">Profil</span>
     </div>
-  </a>
+    <div class="menu-icon blue"><i class="bi bi-person"></i></div>
+  </div>
+  <div class="menu-card" (click)="goTo('beranda')">
+    <div class="menu-text">
+      <span class="menu-sub">Beranda</span>
+      <span class="menu-title">Beranda</span>
+    </div>
+    <div class="menu-icon red"><i class="bi bi-grid"></i></div>
+  </div>
+  <div class="menu-card" (click)="goTo('materi')">
+    <div class="menu-text">
+      <span class="menu-sub">1. Kelola Materi</span>
+      <span class="menu-title">Materi</span>
+    </div>
+    <div class="menu-icon red"><i class="bi bi-folder2-open"></i></div>
+  </div>
+  <div class="menu-card" (click)="goTo('pelatihan')">
+    <div class="menu-text">
+      <span class="menu-sub">2. Kelola Pelatihan</span>
+      <span class="menu-title">Pelatihan</span>
+    </div>
+    <div class="menu-icon red"><i class="bi bi-folder2-open"></i></div>
+  </div>
+</div>
 
-  <ng-template ngbNavContent>
-    <div class="tab-content-wrapper">
-      <div class="d-flex align-items-center justify-content-between mb-3">
-        <button class="btn-modern" (click)="tambah('seksi')">
-          <i class="bi bi-plus-lg"></i> Tambah
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-white py-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <h4 class="mb-0 fw-bold">
+          <i class="bi bi-person-plus-fill me-2" style="color: #ba0403"></i>
+          Pendaftaran Karyawan ke Batch Pelatihan
+        </h4>
+        <button class="btn-modern" (click)="openRegisterModal()">
+          <i class="bi bi-plus-lg"></i> Daftarkan Karyawan
         </button>
+      </div>
+    </div>
 
-        <!-- CENTER: SEARCH -->
-        <div style="width: 300px">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Cari Seksie..."
-            [(ngModel)]="searchSeksi"
-            style="border-radius: 10px"
-          />
+    <!-- FILTER BATCH -->
+    <div class="filter-tabs-container px-3 pt-3">
+      <div class="row align-items-center">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Pilih Batch Pelatihan:</label>
+          <select
+            class="form-select"
+            [(ngModel)]="selectedPlbId"
+            (change)="onBatchChange()"
+          >
+            <option [value]="0">-- Pilih Batch --</option>
+            <option *ngFor="let batch of batchList" [value]="batch.plbId">
+              {{ batch.plbNamaBatch }}
+            </option>
+          </select>
         </div>
+        <div class="col-md-8 text-end">
+          <span class="badge-filter-info" *ngIf="selectedPlbId > 0">
+            <i class="bi bi-info-circle"></i> Menampilkan
+            {{ totalElements }} pendaftaran
+          </span>
+          <span
+            class="badge-filter-info bg-warning text-dark"
+            *ngIf="selectedPlbId === 0"
+          >
+            <i class="bi bi-exclamation-triangle"></i> Silakan pilih batch
+            terlebih dahulu
+          </span>
+        </div>
+      </div>
+    </div>
 
-        <!-- RIGHT (kosong biar balance) -->
-        <div style="width: 15vh"></div>
+    <div class="card-body">
+      <!-- TOOLBAR -->
+      <div
+        class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2"
+      >
+        <div style="width: 320px">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"
+              ><i class="bi bi-search"></i
+            ></span>
+            <input
+              type="text"
+              class="form-control border-start-0 ps-0"
+              placeholder="Cari karyawan..."
+              [(ngModel)]="searchKeyword"
+              (keyup)="onSearchKeyUp()"
+            />
+            <button
+              *ngIf="searchKeyword"
+              class="btn btn-clear"
+              (click)="clearSearch()"
+            >
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+        </div>
+        <select
+          class="form-select"
+          style="width: 100px"
+          [(ngModel)]="pageSize"
+          (change)="onPageSizeChange()"
+        >
+          <option *ngFor="let opt of pageSizeOptions" [value]="opt">
+            {{ opt }} Baris
+          </option>
+        </select>
       </div>
 
-      <div class="table-responsive">
-        <div class="mb-3"></div>
-        <table class="table table-striped table-hover">
+      <!-- LOADING -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border" role="status" style="color: #ba0403">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <!-- TABLE PENDAFTARAN (sudah terdaftar) -->
+      <div class="table-wrapper" *ngIf="!loading && selectedPlbId > 0">
+        <table class="table table-hover align-middle">
           <thead class="table-light">
             <tr>
-              <th>No</th>
-              <th>Kode</th>
-              <th>Nama</th>
-              <th>Departemen</th>
+              <th style="width: 50px">No</th>
+              <th>Karyawan</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Divisi</th>
+              <th>Jabatan</th>
               <th>Status</th>
-              <th>Aksi</th>
+              <th>Tanggal Daftar</th>
+              <th style="width: 120px">Aksi</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of pagedSeksi; let i = index">
-              <td>{{ i + 1 }}</td>
-              <td>{{ item.sekJudul }}</td>
-              <td>{{ item.sekNama }}</td>
-              <td>{{ item.depNama }}</td>
+            <tr *ngFor="let item of pendaftaranList; let i = index">
+              <td>{{ page * pageSize + i + 1 }}</td>
               <td>
-                <span
-                  [ngClass]="
-                    item.sekStatus === 'AKTIF'
-                      ? 'badge-custom-active'
-                      : 'badge-custom-outline'
-                  "
+                <div class="d-flex align-items-center gap-2">
+                  <div
+                    class="avatar-placeholder"
+                    style="background-color: #ba0403"
+                  >
+                    {{
+                      (item.karyawanNamaDpn?.charAt(0) || "") +
+                        (item.karyawanNamaBkg?.charAt(0) || "")
+                    }}
+                  </div>
+                  {{ item.karyawanName || "-" }}
+                </div>
+              </td>
+              <td>{{ item.karyawanUsername || "-" }}</td>
+              <td>{{ item.karyawanEmail || "-" }}</td>
+              <td>{{ item.karyawanDivisi || "-" }}</td>
+              <td>{{ item.karyawanJabatan || "-" }}</td>
+              <td>
+                <span [ngClass]="getStatusBadgeClass(item.pdtStatus)"
+                  ><i [class]="getStatusIcon(item.pdtStatus)"></i>
+                  {{ item.statusText || getStatusText(item.pdtStatus) }}</span
                 >
-                  {{ item.sekStatus }}
-                </span>
+              </td>
+              <td>
+                {{ item.pdtCreateDate | date: "dd/MM/yyyy HH:mm" || "-" }}
               </td>
               <td>
                 <div class="action-container">
-                  <!-- EDIT BUTTON -->
-                  <button class="btn-icon" (click)="editSeksie(item)">
-                    <i class="bi bi-pencil"></i>
+                  <button
+                    class="btn-icon"
+                    (click)="openDetailModal(item)"
+                    title="Detail"
+                  >
+                    <i class="bi bi-eye"></i>
                   </button>
-
-                  <!-- TOGGLE SWITCH -->
-                  <label class="switch">
-                    <input
-                      type="checkbox"
-                      [checked]="item.sekStatus?.toUpperCase() === 'AKTIF'"
-                      (click)="confirmToggleStatus($event, item, 'seksi')"
-                    />
-                    <span class="slider"></span>
-                  </label>
+                  <ng-container *ngIf="item.pdtStatus === 0">
+                    <button
+                      class="btn-icon btn-approve"
+                      (click)="updateStatus(item.pdtId!, 1)"
+                      title="Terima"
+                    >
+                      <i class="bi bi-check-lg"></i>
+                    </button>
+                    <button
+                      class="btn-icon btn-reject"
+                      (click)="updateStatus(item.pdtId!, 2)"
+                      title="Tolak"
+                    >
+                      <i class="bi bi-x-lg"></i>
+                    </button>
+                  </ng-container>
+                  <ng-container *ngIf="item.pdtStatus === 1">
+                    <button
+                      class="btn-icon btn-reject"
+                      (click)="updateStatus(item.pdtId!, 2)"
+                      title="Batalkan"
+                    >
+                      <i class="bi bi-x-lg"></i>
+                    </button>
+                  </ng-container>
+                  <button
+                    class="btn-icon btn-danger"
+                    (click)="deletePendaftaran(item.pdtId!)"
+                    title="Hapus"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
                 </div>
+              </td>
+            </tr>
+            <tr *ngIf="pendaftaranList.length === 0">
+              <td colspan="9" class="text-center py-5 text-muted">
+                <i class="bi bi-inbox fs-1"></i>
+                <p class="mt-2">Belum ada pendaftaran untuk batch ini</p>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-    </div>
-    <div class="d-flex justify-content-between align-items-center mt-3">
-      <select
-        class="form-control"
-        style="width: 120px"
-        [(ngModel)]="pageSizeSeksi"
-        (change)="pageSeksi = 1"
+
+      <div *ngIf="!loading && selectedPlbId === 0" class="text-center py-5">
+        <i class="bi bi-folder2-open fs-1 text-muted"></i>
+        <p class="mt-2 text-muted">
+          Silakan pilih batch pelatihan terlebih dahulu
+        </p>
+      </div>
+
+      <!-- PAGINATION -->
+      <div
+        class="d-flex justify-content-between align-items-center mt-3"
+        *ngIf="!loading && totalPages > 0"
       >
-        <option *ngFor="let opt of pageSizeOptions" [ngValue]="opt">
-          {{ opt }}
-        </option>
-      </select>
-
-      <div>
-        <button
-          class="btn btn-sm btn-outline-secondary me-2"
-          (click)="pageSeksi = pageSeksi - 1"
-          [disabled]="pageSeksi === 1"
-        >
-          Prev
-        </button>
-
-        {{ pageSeksi }} / {{ totalPagesSeksi }}
-
-        <button
-          class="btn btn-sm btn-outline-secondary ms-2"
-          (click)="pageSeksi = pageSeksi + 1"
-          [disabled]="pageSeksi === totalPagesSeksi"
-        >
-          Next
-        </button>
+        <div class="text-muted small">
+          Menampilkan {{ page * pageSize + 1 }} -
+          {{ min(page * pageSize + pageSize, totalElements) }} dari
+          {{ totalElements }} data
+        </div>
+        <div class="d-flex gap-2">
+          <button
+            class="btn-pagination"
+            (click)="onPageChange(page - 1)"
+            [disabled]="page === 0"
+          >
+            <i class="bi bi-chevron-left"></i> Prev
+          </button>
+          <span class="px-3 py-1 bg-light rounded"
+            >Halaman {{ page + 1 }} / {{ totalPages }}</span
+          >
+          <button
+            class="btn-pagination"
+            (click)="onPageChange(page + 1)"
+            [disabled]="page >= totalPages - 1"
+          >
+            Next <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
       </div>
     </div>
-  </ng-template>
-</li>
+  </div>
+</div>
 
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-  rel="stylesheet"
-/>
-
-<ng-template #modalDivisi let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">
-      {{ isEditDivisi ? "Edit Divisi" : "Tambah Divisi" }}
+<!-- MODAL DAFTARKAN KARYAWAN (checkbox untuk pilih banyak) -->
+<ng-template #modalRegister let-modal>
+  <div class="modal-header border-0 pb-0">
+    <h5 class="modal-title fw-bold">
+      <i class="bi bi-person-plus me-2" style="color: #ba0403"></i>Daftarkan
+      Karyawan ke Batch Pelatihan
     </h5>
-    <button type="button" class="btn-close-custom" (click)="modal.dismiss()">
+    <button type="button" class="btn-close-custom" (click)="closeModal()">
       <i class="bi bi-x-lg"></i>
     </button>
   </div>
 
   <div class="modal-body">
     <div class="mb-3">
-      <label>Kode</label>
-      <input
-        type="text"
-        class="form-control"
-        [(ngModel)]="formDivisi.divJudul"
-      />
+      <label class="form-label fw-semibold">Batch Pelatihan:</label>
+      <select
+        class="form-select"
+        [(ngModel)]="registerPlbId"
+        (change)="onRegisterBatchChange()"
+      >
+        <option [value]="0">-- Pilih Batch --</option>
+        <option *ngFor="let batch of batchList" [value]="batch.plbId">
+          {{ batch.plbNamaBatch }}
+        </option>
+      </select>
     </div>
 
     <div class="mb-3">
-      <label>Nama</label>
+      <label class="form-label fw-semibold">Cari Karyawan:</label>
       <input
         type="text"
         class="form-control"
-        [(ngModel)]="formDivisi.divNama"
+        placeholder="Cari nama, username, atau email..."
+        [(ngModel)]="searchKaryawanKeyword"
+        (keyup)="searchUnregisteredKaryawan()"
       />
+    </div>
+
+    <div class="alert alert-info small" *ngIf="registerPlbId > 0">
+      <i class="bi bi-info-circle"></i> Centang karyawan yang ingin didaftarkan
+      ke batch <strong>{{ getBatchName(registerPlbId) }}</strong>
+    </div>
+
+    <div class="table-wrapper" style="max-height: 400px; overflow-y: auto">
+      <table class="table table-hover align-middle">
+        <thead class="table-light sticky-top">
+          <tr>
+            <th style="width: 50px">
+              <input
+                type="checkbox"
+                (change)="toggleSelectAll($event)"
+                [checked]="isAllSelected()"
+              />
+            </th>
+            <th>No</th>
+            <th>Nama Karyawan</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Divisi</th>
+            <th>Jabatan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of unregisteredKaryawanList; let i = index">
+            <td>
+              <input
+                type="checkbox"
+                [(ngModel)]="item.selected"
+                (change)="onSelectionChange()"
+              />
+            </td>
+            <td>{{ i + 1 }}</td>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div
+                  class="avatar-placeholder"
+                  style="background-color: #ba0403"
+                >
+                  {{
+                    (item.kryNamaDpn?.charAt(0) || "") +
+                      (item.kryNamaBkg?.charAt(0) || "")
+                  }}
+                </div>
+                {{ item.kryNamaDpn }} {{ item.kryNamaBkg }}
+              </div>
+            </td>
+            <td>{{ item.kryUsername }}</td>
+            <td>{{ item.kryEmail }}</td>
+            <td>{{ item.kryDivisi || "-" }}</td>
+            <td>{{ item.kryJabatan || "-" }}</td>
+          </tr>
+          <tr *ngIf="unregisteredKaryawanList.length === 0">
+            <td colspan="7" class="text-center text-muted py-3">
+              <i class="bi bi-inbox"></i> Tidak ada karyawan yang belum
+              terdaftar
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-3 text-muted small">
+      <i class="bi bi-check-square"></i> Terpilih:
+      {{ getSelectedCount() }} karyawan
     </div>
   </div>
 
-  <div class="modal-footer">
-    <button class="btn-modern-outline" (click)="modal.dismiss()">Batal</button>
-    <button class="btn-modern" (click)="saveDivisi(modal)">
-      {{ isEditDivisi ? "Ubah" : "Simpan" }}
+  <div class="modal-footer border-0">
+    <button class="btn-modern-outline" (click)="closeModal()">Batal</button>
+    <button
+      class="btn-modern"
+      (click)="submitRegister()"
+      [disabled]="getSelectedCount() === 0"
+    >
+      <i class="bi bi-save"></i> Daftarkan ({{ getSelectedCount() }})
     </button>
+  </div>
+</ng-template>
+
+<!-- MODAL DETAIL PENDAFTARAN -->
+<ng-template #modalDetail let-modal>
+  <div class="modal-header border-0 pb-0">
+    <h5 class="modal-title fw-bold">
+      <i class="bi bi-info-circle-fill me-2 text-info"></i>Detail Pendaftaran
+    </h5>
+    <button type="button" class="btn-close-custom" (click)="closeModal()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+  <div class="modal-body" *ngIf="selectedPendaftaran">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">ID Pendaftaran</label>
+          <p class="fw-semibold mb-0">{{ selectedPendaftaran.pdtId || "-" }}</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Status</label>
+          <p class="fw-semibold mb-0">
+            <span
+              [ngClass]="getStatusBadgeClass(selectedPendaftaran.pdtStatus)"
+              >{{
+                selectedPendaftaran.statusText ||
+                  getStatusText(selectedPendaftaran.pdtStatus)
+              }}</span
+            >
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Karyawan</label>
+          <p class="fw-semibold mb-0">
+            {{ selectedPendaftaran.karyawanName || "-" }}
+          </p>
+          <small class="text-muted">{{
+            selectedPendaftaran.karyawanUsername
+          }}</small>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Batch Pelatihan</label>
+          <p class="fw-semibold mb-0">
+            {{ selectedPendaftaran.batchNama || "-" }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Email</label>
+          <p class="fw-semibold mb-0">
+            {{ selectedPendaftaran.karyawanEmail || "-" }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Divisi / Jabatan</label>
+          <p class="fw-semibold mb-0">
+            {{ selectedPendaftaran.karyawanDivisi || "-" }} /
+            {{ selectedPendaftaran.karyawanJabatan || "-" }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Dibuat Pada</label>
+          <p class="fw-semibold mb-0">
+            {{
+              selectedPendaftaran.pdtCreateDate
+                | date: "dd MMM yyyy HH:mm" || "-"
+            }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Dibuat Oleh</label>
+          <p class="fw-semibold mb-0">
+            {{ selectedPendaftaran.pdtCreateBy || "-" }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer border-0">
+    <button class="btn-modern-outline" (click)="closeModal()">Tutup</button>
   </div>
 </ng-template>

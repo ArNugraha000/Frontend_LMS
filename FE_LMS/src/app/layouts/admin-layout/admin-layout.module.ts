@@ -29,6 +29,10 @@ import { MateriComponent } from "../../pages/materi/materi.component";
 import { QuizSoalFormComponent } from "../../pages/materi/quiz-soal-form/quiz-soal-form.component";
 import { QuizSoalListComponent } from "../../pages/materi/quiz-soal/quiz-soal-list.component";
 import { ManageTrainingComponent } from "../../pages/managetraining/manage-training.component";
+import { DetailManageTraining } from "../../pages/managetraining/detailmanagetraining/detailmanagetraining.component";
+import { KaryawanComponent } from "../../pages/configuration/karyawan/karyawan.component";
+import { JabatanComponent } from "../../pages/configuration/jabatan/jabatan.component";
+import { TrainingJadwalmateriComponent } from "../../pages/Training/TrainingJadwalMateri/training-jadwal-materi.component";
 
 @NgModule({
   imports: [
@@ -63,6 +67,10 @@ import { ManageTrainingComponent } from "../../pages/managetraining/manage-train
     QuizSoalFormComponent,
     QuizSoalListComponent,
     ManageTrainingComponent,
+    DetailManageTraining,
+    KaryawanComponent,
+    JabatanComponent,
+    TrainingJadwalmateriComponent,
   ],
 })
 export class AdminLayoutModule {}

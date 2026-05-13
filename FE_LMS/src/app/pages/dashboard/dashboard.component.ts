@@ -6,6 +6,7 @@ import { Router } from "@angular/router";
   selector: "dashboard-cmp",
   moduleId: module.id,
   templateUrl: "dashboard.component.html",
+  styleUrls: ["./dashboard.component.css"],
 })
 export class DashboardComponent implements OnInit {
   constructor(private router: Router) {}
@@ -188,5 +189,23 @@ export class DashboardComponent implements OnInit {
   onMiddleClick(): void {
     console.log("Kursus saya");
     this.router.navigate(["/mytraining"]);
+  }
+  goTo(menu: string) {
+    switch (menu) {
+      case "profil":
+        this.router.navigate(["/profile"]);
+        break;
+      case "beranda":
+        this.router.navigate(["/dashboard"]);
+        break;
+      case "materi":
+        this.router.navigate(["/materi"]);
+        break;
+      case "pelatihan":
+        this.router.navigate(["/manage-training"]);
+        break;
+      default:
+        console.log("Menu tidak dikenali:", menu);
+    }
   }
 }

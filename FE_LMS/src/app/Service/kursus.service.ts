@@ -1,13 +1,11 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { Kursus } from "../models/kursus.model";
 
 @Injectable({
   providedIn: "root",
 })
 export class KursusService {
-  // ✅ Pastikan URL ini sesuai dengan backend
   private apiUrl = "http://localhost:8080/api/kursus";
 
   constructor(private http: HttpClient) {}

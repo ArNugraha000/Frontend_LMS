@@ -1,0 +1,234 @@
+<!-- profile.component.html - Tanpa Icon, Tanpa Password -->
+<div class="profile-container">
+  <div class="wrapper-white">
+    <!-- Header -->
+    <div class="profile-header">
+      <h2>
+        <!-- Hapus icon -->
+        Profil Saya
+      </h2>
+      <button *ngIf="!isEditing" class="btn-modern" (click)="toggleEditMode()">
+        Edit Profil
+      </button>
+      <button
+        *ngIf="isEditing"
+        class="btn-modern-outline"
+        (click)="toggleEditMode()"
+      >
+        Batal
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-danger" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2 text-muted">Memuat data profil...</p>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+      {{ errorMessage }}
+      <button type="button" class="btn-close" (click)="errorMessage = ''">
+        ×
+      </button>
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="successMessage" class="alert alert-success" role="alert">
+      {{ successMessage }}
+      <button type="button" class="btn-close" (click)="successMessage = ''">
+        ×
+      </button>
+    </div>
+
+    <!-- Profile Form -->
+    <form
+      [formGroup]="profileForm"
+      (ngSubmit)="onSubmit()"
+      *ngIf="!isLoading && profileData"
+    >
+      <div class="row">
+        <!-- Foto Profil -->
+        <div class="col-md-3 text-center mb-4">
+          <div class="profile-avatar">
+            <div
+              class="avatar-large mx-auto"
+              *ngIf="!imagePreview && !profileForm.get('kryProfil')?.value"
+            >
+              <span
+                >{{ profileForm.get("kryNamaDpn")?.value?.charAt(0) || ""
+                }}{{
+                  profileForm.get("kryNamaBkg")?.value?.charAt(0) || ""
+                }}</span
+              >
+            </div>
+            <img
+              *ngIf="imagePreview || profileForm.get('kryProfil')?.value"
+              [src]="imagePreview || profileForm.get('kryProfil')?.value"
+              class="profile-image rounded-circle"
+              alt="Profile Photo"
+              onerror="this.src = 'assets/img/default-avatar.png'"
+            />
+          </div>
+          <p class="text-muted small mt-2">{{ profileData.kryUsername }}</p>
+        </div>
+
+        <!-- Informasi Pribadi -->
+        <div class="col-md-9">
+          <h5 class="section-title">Informasi Pribadi</h5>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label text-muted small">Nama Depan</label>
+              <input
+                type="text"
+                class="form-control readonly-field"
+                formControlName="kryNamaDpn"
+                readonly
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted small">Nama Belakang</label>
+              <input
+                type="text"
+                class="form-control readonly-field"
+                formControlName="kryNamaBkg"
+                readonly
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted small">Jabatan</label>
+              <input
+                type="text"
+                class="form-control readonly-field"
+                formControlName="kryJabatan"
+                readonly
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted small">Divisi</label>
+              <input
+                type="text"
+                class="form-control readonly-field"
+                formControlName="kryDivisi"
+                readonly
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted small">Departemen</label>
+              <input
+                type="text"
+                class="form-control readonly-field"
+                formControlName="kryDep"
+                readonly
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted small">Status</label>
+              <input
+                type="text"
+                class="form-control readonly-field"
+                [value]="profileData.kryStatus === '0' ? 'AKTIF' : 'NONAKTIF'"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informasi Dasar (Hanya Email & Tanggal Lahir) - TIDAK ADA PASSWORD -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <h5 class="section-title">Informasi Dasar</h5>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label"
+                >Email <span class="text-danger">*</span></label
+              >
+              <input
+                type="email"
+                class="form-control"
+                formControlName="kryEmail"
+                [readonly]="!isEditing"
+                [class.is-invalid]="kryEmail?.invalid && kryEmail?.touched"
+                placeholder="Masukkan email"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="kryEmail?.invalid && kryEmail?.touched"
+              >
+                Masukkan email yang valid
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Tanggal Lahir</label>
+              <input
+                type="date"
+                class="form-control"
+                formControlName="kryTglLahir"
+                [readonly]="!isEditing"
+                [max]="todayDate"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informasi Akses -->
+      <div class="row mt-4" *ngIf="profileData">
+        <div class="col-12">
+          <h5 class="section-title">Informasi Akses</h5>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label text-muted small">Akses Pertama</label>
+              <input
+                type="text"
+                class="form-control readonly-field"
+                [value]="
+                  profileData.kryCreatedDate | date: 'dd MMMM yyyy, HH:mm'
+                "
+                readonly
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted small">Akses Terakhir</label>
+              <input
+                type="text"
+                class="form-control readonly-field"
+                [value]="profileData.kryModifDate | date: 'dd MMMM yyyy, HH:mm'"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="row mt-4" *ngIf="isEditing">
+        <div class="col-12 text-end">
+          <button
+            type="button"
+            class="btn btn-secondary me-2 px-4"
+            (click)="toggleEditMode()"
+          >
+            Batal
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary px-4"
+            [disabled]="isLoading"
+          >
+            Simpan Perubahan
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && !profileData" class="empty-state">
+      <p>Tidak dapat memuat data profil</p>
+      <button class="btn-modern" (click)="loadProfile()">Coba Lagi</button>
+    </div>
+  </div>
+</div>

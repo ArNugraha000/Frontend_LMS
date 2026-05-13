@@ -1,79 +1,46 @@
-<div class="row">
-  <!-- LEFT BUTTON -->
-  <div class="col-lg-4 col-md-6 col-sm-6">
-    <div class="card card-stats clickable-card" (click)="onLeftClick()">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-5 col-md-4">
-            <div class="icon-big text-center icon-primary">
-              <i class="nc-icon nc-hat-3 text-primary"></i>
-            </div>
-          </div>
-          <div class="col-7 col-md-8">
-            <div class="numbers">
-              <p class="card-category">Kursus, Saya</p>
-              <p class="card-title">Kursus</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="card-footer">
-        <hr />
-        <div class="stats"><i class="fa fa-bars"></i>Menu</div>
-      </div>
+<!-- ================= CARD MENU ================= -->
+<div class="menu-container">
+  <div class="menu-card" (click)="goTo('profil')">
+    <div class="menu-text">
+      <span class="menu-sub">Profil Saya</span>
+      <span class="menu-title">Profil</span>
+    </div>
+    <div class="menu-icon blue">
+      <i class="bi bi-person"></i>
     </div>
   </div>
 
-  <!-- MIDDLE BUTTON -->
-  <div class="col-lg-4 col-md-6 col-sm-6">
-    <div class="card card-stats clickable-card" (click)="onMiddleClick()">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-5 col-md-4">
-            <div class="icon-big text-center icon-success">
-              <i class="nc-icon nc-single-02 text-success"></i>
-            </div>
-          </div>
-          <div class="col-7 col-md-8">
-            <div class="numbers">
-              <p class="card-category">Profil, Saya</p>
-              <p class="card-title">Profil</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="card-footer">
-        <hr />
-        <div class="stats"><i class="fa fa-bars"></i> Menu</div>
-      </div>
+  <div class="menu-card" (click)="goTo('beranda')">
+    <div class="menu-text">
+      <span class="menu-sub">Beranda</span>
+      <span class="menu-title">Beranda</span>
+    </div>
+    <div class="menu-icon red">
+      <i class="bi bi-grid"></i>
     </div>
   </div>
 
-  <!-- RIGHT INFO -->
-  <div class="col-lg-4 col-md-12 col-sm-12">
-    <div class="card card-stats">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-5 col-md-4">
-            <div class="icon-big text-center icon-warning">
-              <i class="nc-icon nc-chart-bar-32 text-warning"></i>
-            </div>
-          </div>
-          <div class="col-7 col-md-8">
-            <div class="numbers">
-              <p class="card-category">Total Kursus</p>
-              <p class="card-title">1</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="card-footer">
-        <hr />
-        <div class="stats"><i class="fa fa-refresh"></i> Update otomatis</div>
-      </div>
+  <div class="menu-card" (click)="goTo('materi')">
+    <div class="menu-text">
+      <span class="menu-sub">1. Kelola Materi</span>
+      <span class="menu-title">Materi</span>
+    </div>
+    <div class="menu-icon red">
+      <i class="bi bi-folder2-open"></i>
+    </div>
+  </div>
+
+  <div class="menu-card" (click)="goTo('pelatihan')">
+    <div class="menu-text">
+      <span class="menu-sub">2. Kelola Pelatihan</span>
+      <span class="menu-title">Pelatihan</span>
+    </div>
+    <div class="menu-icon red">
+      <i class="bi bi-folder2-open"></i>
     </div>
   </div>
 </div>
+
 <div class="course-container">
   <h4 class="title">Kursus yang Sedang Anda Jalani</h4>
   <div class="timeline">
@@ -186,241 +153,6 @@
     </div>
   </div>
 </div>
-
-<style>
-  /* ===== CONTAINER ===== */
-  .pagination-box {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end; /* tombol di kanan */
-    gap: 15px; /* jarak antar elemen */
-    padding: 10px 20px; /* padding kiri/kanan */
-    font-size: 13px;
-    color: #555;
-  }
-  .training-container {
-    margin-top: 20px;
-  }
-
-  .list-wrapper {
-    background: #fff;
-    border-radius: 14px;
-    border: 1px solid #e6e6e6;
-    overflow: hidden;
-
-    /* tinggi minimum untuk menampung 4 item */
-    min-height: calc((170px + 1px) * 4); /* 110px tinggi item + 1px border */
-  }
-
-  /* ===== ITEM ===== */
-  .training-item {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    padding: 18px 22px;
-    min-height: 110px;
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  .training-item:last-child {
-    border-bottom: none;
-  }
-
-  /* ===== IMAGE ===== */
-  .training-img img {
-    width: 200px;
-    height: 130px;
-    object-fit: cover;
-    border-radius: 10px;
-  }
-
-  /* ===== INFO ===== */
-  .training-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .training-title {
-    font-weight: 600;
-    font-size: 15px;
-    color: #222;
-  }
-
-  /* ===== STATUS ===== */
-  .status-badge {
-    display: inline-block;
-    background: #2ecc71;
-    color: white;
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 6px;
-    width: fit-content;
-  }
-
-  .status-badge.selesai {
-    background: #27ae60;
-  }
-
-  /* ===== PROGRESS ===== */
-  .training-progress {
-    height: 6px;
-    width: 180px;
-  }
-
-  /* ===== DATE ===== */
-  .tanggal {
-    font-size: 12px;
-    color: #666;
-  }
-
-  /* ===== ACTION ===== */
-  .training-action {
-    width: 170px;
-    text-align: right;
-  }
-
-  .course-container {
-    padding: 20px;
-    text-align: center;
-  }
-
-  .title {
-    color: #d40000;
-    font-weight: bold;
-    margin-bottom: 40px;
-  }
-
-  /* TIMELINE */
-  .timeline {
-    position: relative;
-  }
-
-  /* garis utama */
-  .line {
-    position: absolute;
-    top: 90px;
-    left: 5%;
-    right: 5%;
-    height: 4px;
-    background: #ddd;
-    z-index: 1;
-  }
-
-  /* hari */
-  .day {
-    display: inline-block;
-    width: 16%;
-    position: relative;
-    z-index: 2;
-  }
-
-  .day-circle {
-    width: 45px;
-    height: 45px;
-    background: #a8cbe6;
-    border-radius: 50%;
-    line-height: 45px;
-    margin: 5px auto;
-    color: white;
-  }
-
-  .day-label {
-    color: #888;
-    font-size: 14px;
-  }
-
-  /* materi */
-  .materi-wrapper {
-    margin-top: 80px;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 5%;
-  }
-
-  .materi {
-    text-align: center;
-  }
-
-  .materi-circle {
-    width: 45px;
-    height: 45px;
-    background: #d40000;
-    border-radius: 50%;
-    line-height: 45px;
-    color: white;
-    margin: auto;
-  }
-
-  .materi-label {
-    margin-top: 6px;
-    color: #888;
-  }
-
-  .materi-circle {
-    position: relative;
-    z-index: 2;
-  }
-
-  .materi-circle::before {
-    content: "";
-    position: absolute;
-    width: 2px;
-    height: 40px; /* samakan dengan atas */
-    background: #e0e0e0;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 100%; /* naik ke garis tengah */
-  }
-
-  .day-circle {
-    position: relative;
-    z-index: 2;
-  }
-
-  .day-circle::after {
-    content: "";
-    position: absolute;
-    width: 2px;
-    height: 40px; /* sesuaikan jarak */
-    background: #e0e0e0;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 100%; /* mulai dari bawah lingkaran */
-  }
-  .materi-circle {
-    position: relative;
-  }
-
-  .materi-circle::before {
-    content: "";
-    position: absolute;
-    width: 2px;
-    height: 30px;
-    background: #e0e0e0;
-    left: 50%;
-    transform: translateX(-50%);
-    top: -30px; /* dari garis utama ke materi */
-    z-index: 0;
-  }
-
-  .timeline {
-    position: relative;
-    padding: 80px 20px;
-  }
-
-  .line {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: #e0e0e0;
-    transform: translateY(-50%);
-    z-index: 1;
-  }
-</style>
 
 <!-- <div class="row">
   <div class="col-lg-3 col-md-6 col-sm-6">

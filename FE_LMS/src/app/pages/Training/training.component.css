@@ -573,3 +573,27 @@
   margin-top: 8px;
   display: inline-block;
 }
+
+/* training.component.css */
+
+.course-image {
+  width: 160px; /* ✅ Lebar lebih besar untuk landscape */
+  height: 90px; /* ✅ Tinggi 90px (rasio 16:9) */
+  overflow: hidden;
+  border-radius: 12px;
+  flex-shrink: 0;
+  background-color: #f0f0f0;
+}
+
+.course-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* ✅ Memotong agar sesuai container */
+  object-position: center;
+  transition: transform 0.3s ease;
+}
+
+/* Hover effect (opsional) */
+.course-image:hover img {
+  transform: scale(1.05);
+}

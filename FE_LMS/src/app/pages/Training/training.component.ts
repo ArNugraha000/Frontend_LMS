@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { KursusService } from "../../Service/kursus.service";
-import { Kursus } from "../../models/kursus.model";
+import { PelatihanBatchService } from "../../Service/trainingBatch.service";
+import { TrainingBatch } from "../../models/trainingBatch.model";
 import { Router } from "@angular/router";
 import Swal from "sweetalert2";
 
@@ -10,15 +10,15 @@ import Swal from "sweetalert2";
   styleUrls: ["./training.component.css"],
 })
 export class TrainingComponent implements OnInit {
-  filteredData: Kursus[] = [];
-  pagedData: Kursus[] = [];
+  filteredData: TrainingBatch[] = [];
+  pagedData: TrainingBatch[] = [];
 
   searchText: string = "";
 
   currentPage: number = 1;
   totalPages: number = 1;
   pageSizeOptions: number[] = [2, 3, 5, 10];
-  pageSize: number = 5;
+  pageSize: number = 3;
 
   // ===== MODAL KONFIRMASI =====
   showDeleteModal: boolean = false;
@@ -26,45 +26,65 @@ export class TrainingComponent implements OnInit {
   deleteItemName: string = "";
 
   constructor(
-    private kursusService: KursusService,
+    private pelatihanBatchService: PelatihanBatchService,
     private router: Router,
   ) {}
 
   ngOnInit(): void {
     console.log("TrainingComponent Loaded");
-    this.loadKursus();
+    this.loadPelatihanBatch();
   }
 
-  loadKursus() {
-    // Panggil getUnpublished() karena krsStatus = 2 (Draft)
-    this.kursusService.getUnpublished().subscribe({
+  // ✅ PERBAIKAN: Load data dari API pelatihan-batch
+  loadPelatihanBatch() {
+    // Ambil semua batch dengan join (dapat nama kursus)
+    this.pelatihanBatchService.getAllWithJoin(0, 100).subscribe({
       next: (res: any) => {
         console.log("FULL RESPONSE API:", res);
 
-        let data = [];
-        if (res && res.status === 200) {
-          data = res.data || [];
+        let data: TrainingBatch[] = [];
+        if (res && res.code === 200 && res.data) {
+          // Jika response pakai DtoResponseL3
+          if (res.data.content) {
+            data = res.data.content;
+          } else if (Array.isArray(res.data)) {
+            data = res.data;
+          } else {
+            data = [];
+          }
         } else if (res && Array.isArray(res)) {
           data = res;
-        } else if (res && res.data) {
-          data = res.data;
-        } else {
-          data = [];
         }
 
-        // Data yang muncul adalah yang krsStatus = 2 (Unpublished/Draft)
         this.filteredData = data;
-        console.log("DATA KURSUS (Unpublished/Draft):", this.filteredData);
+        console.log("DATA PELATIHAN BATCH:", this.filteredData);
         this.updatePagination();
       },
       error: (err) => {
         console.error("ERROR API:", err);
         this.showErrorModal(
           "Gagal Memuat Data",
-          "Terjadi kesalahan saat memuat data pelatihan",
+          "Terjadi kesalahan saat memuat data batch pelatihan",
         );
       },
     });
+  }
+
+  // ✅ Helper: Ambil teks status
+  getStatusText(status: number): string {
+    switch (status) {
+      case 0:
+        return "NONAKTIF";
+      case 1:
+        return "AKTIF";
+      default:
+        return "-";
+    }
+  }
+
+  // ✅ Helper: Ambil class badge
+  getStatusBadgeClass(status: number): string {
+    return status === 1 ? "badge-success" : "badge-secondary";
   }
 
   updatePagination() {
@@ -72,8 +92,10 @@ export class TrainingComponent implements OnInit {
 
     if (this.searchText) {
       const lower = this.searchText.toLowerCase();
-      data = this.filteredData.filter((item) =>
-        item.krsNama?.toLowerCase().includes(lower),
+      data = this.filteredData.filter(
+        (item) =>
+          item.plbNamaBatch?.toLowerCase().includes(lower) ||
+          item.kursusNama?.toLowerCase().includes(lower),
       );
     }
 
@@ -125,42 +147,61 @@ export class TrainingComponent implements OnInit {
     this.deleteItemName = "";
   }
 
-  confirmDelete() {
-    if (this.deleteId) {
-      this.kursusService.delete(this.deleteId, "admin").subscribe({
-        next: (res: any) => {
-          if (res && res.status === 200) {
-            this.closeDeleteModal();
-            this.showSuccessModal(
-              "Terhapus!",
-              "Data pelatihan berhasil dihapus",
-            );
-            this.loadKursus();
-          } else {
-            this.showErrorModal(
-              "Gagal!",
-              res?.message || "Gagal menghapus data",
-            );
-          }
-        },
-        error: (err) => {
-          console.error(err);
-          this.showErrorModal(
-            "Error!",
-            "Terjadi kesalahan saat menghapus data",
-          );
-        },
-      });
-    }
-  }
-
   deleteKursus(id: number, nama: string) {
     this.openDeleteModal(id, nama);
   }
 
+  // ========== ACTIONS ==========
+  isiKehadiran(item: TrainingBatch) {
+    console.log("Isi Kehadiran:", item.plbNamaBatch);
+    this.showSuccessModal(
+      "Info",
+      `Daftar Lanjutan Pelatihan ${item.plbNamaBatch}`,
+    );
+  }
+
+  lihatRiwayat(item: TrainingBatch) {
+    console.log("Riwayat:", item.plbNamaBatch);
+    this.showSuccessModal(
+      "Info",
+      `Kelola Riwayat Pelatihan ${item.plbNamaBatch}`,
+    );
+  }
+
+  detailBatch(item: any) {
+    console.log("Data batch:", item);
+
+    // Gunakan properti yang benar dari data
+    const plbId = item.plbId;
+    const krsId = item.plbKrsId; // Perhatikan: ini plbKrsId, bukan krsId
+
+    console.log("Detected IDs - plbId:", plbId, "krsId:", krsId);
+
+    if (plbId && krsId) {
+      // Navigasi dengan state untuk mengirim data tambahan
+      this.router.navigate(["/penjadwalan", plbId, krsId], {
+        state: {
+          batchName: item.plbNamaBatch || item.namaBatch || item.nama,
+          plbId: plbId,
+          krsId: krsId,
+        },
+      });
+    } else {
+      console.error("Missing required IDs:", {
+        plbId,
+        krsId,
+        originalItem: item,
+      });
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Data pelatihan tidak lengkap! Tidak dapat mengakses jadwal materi.",
+        confirmButtonText: "OK",
+      });
+    }
+  }
   // ========== MODAL ALERT CUSTOM ==========
   showSuccessModal(title: string, message: string) {
-    // Gunakan SweetAlert2 untuk success (toast style)
     Swal.fire({
       icon: "success",
       title: title,
@@ -172,7 +213,6 @@ export class TrainingComponent implements OnInit {
   }
 
   showErrorModal(title: string, message: string) {
-    // Gunakan modal custom untuk error
     Swal.fire({
       icon: "error",
       title: title,
@@ -183,38 +223,7 @@ export class TrainingComponent implements OnInit {
     });
   }
 
-  showWarningModal(title: string, message: string) {
-    Swal.fire({
-      icon: "warning",
-      title: title,
-      text: message,
-      confirmButtonColor: "#ba0403",
-      confirmButtonText: "OK",
-      background: "#fff",
-    });
-  }
-
-  // ========== ACTIONS ==========
-  isiKehadiran(item: Kursus) {
-    console.log("Isi Kehadiran:", item.krsNama);
-    this.showSuccessModal("Info", `Isi kehadiran untuk ${item.krsNama}`);
-  }
-
-  lihatRiwayat(item: Kursus) {
-    console.log("Riwayat:", item.krsNama);
-    this.showSuccessModal("Info", `Riwayat pelatihan ${item.krsNama}`);
-  }
-
-  onLeftClick(): void {
-    console.log("Mulai kursus");
-    this.router.navigate(["/mytraining"]);
-  }
-
-  onMiddleClick(): void {
-    console.log("Profil saya");
-    this.router.navigate(["/profile"]);
-  }
-
+  // ========== NAVIGATION ==========
   goTo(menu: string) {
     switch (menu) {
       case "profil":

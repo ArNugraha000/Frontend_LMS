@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { CookieService } from "ngx-cookie-service";
 import Swal from "sweetalert2";
 import { KursusService } from "../../Service/kursus.service";
 import { Kursus } from "../../models/kursus.model";
+import { PelatihanBatchService } from "../../Service/trainingBatch.service";
 
 @Component({
   selector: "app-training-materi",
@@ -18,12 +18,8 @@ export class ManageTrainingComponent implements OnInit {
 
   // Search & Filter
   searchText: string = "";
-  currentFilter: string = "all"; // all, draft, published
-
-  // Sorting
-  sortBy: string = "name"; // name, date
-
-  // Pagination
+  currentFilter: string = "all";
+  sortBy: string = "name";
   currentPage: number = 1;
   totalPages: number = 1;
   pageSizeOptions: number[] = [5, 10, 25, 50];
@@ -34,14 +30,14 @@ export class ManageTrainingComponent implements OnInit {
   totalDraft: number = 0;
   totalPublished: number = 0;
 
-  // ===== MODAL =====
+  // Modal
   showModal: boolean = false;
   showDetailModal: boolean = false;
   isEditMode: boolean = false;
   editId: number | null = null;
   selectedDetail: Kursus | null = null;
 
-  // FORM DATA
+  // Form Data
   formData: any = {
     krsNama: "",
     krsJenis: "",
@@ -50,14 +46,28 @@ export class ManageTrainingComponent implements OnInit {
     krsGambar: "",
   };
 
-  // FILE
+  // File
   selectedFile: File | null = null;
   fileName: string = "";
   isSaving: boolean = false;
 
+  // ==================== MODAL BATCH ====================
+  showBatchModal = false;
+  selectedKursusId: number = 0;
+  selectedKursusNama: string = "";
+  generatedBatchName: string = "";
+  isSavingBatch = false;
+
+  batchForm = {
+    plbKrsId: 0,
+    plbNamaBatch: "",
+    plbStatus: 0,
+  };
+
   constructor(
     private kursusService: KursusService,
     private router: Router,
+    private pelatihanBatchService: PelatihanBatchService,
   ) {}
 
   ngOnInit(): void {
@@ -66,11 +76,10 @@ export class ManageTrainingComponent implements OnInit {
   }
 
   loadKursus() {
-    this.kursusService.getAll().subscribe({
+    this.kursusService.getUnpublished().subscribe({
       next: (res: any) => {
         console.log("FULL RESPONSE API:", res);
 
-        // ✅ Perbaiki: ambil data dari res.data
         if (res && res.status === 200) {
           this.allData = res.data || [];
         } else if (res && res.data) {
@@ -79,7 +88,6 @@ export class ManageTrainingComponent implements OnInit {
           this.allData = [];
         }
 
-        // Calculate statistics
         this.totalAll = this.allData.length;
         this.totalDraft = this.allData.filter(
           (x) => x.krsPublishStatus === 1,
@@ -88,7 +96,6 @@ export class ManageTrainingComponent implements OnInit {
           (x) => x.krsPublishStatus === 2,
         ).length;
 
-        // Apply current filter
         this.applyFilter();
       },
       error: (err) => {
@@ -102,17 +109,116 @@ export class ManageTrainingComponent implements OnInit {
     });
   }
 
+  // ✅ Method untuk generate preview nama batch (panggil API)
+  generatePreviewBatchName() {
+    this.pelatihanBatchService
+      .getLastBatchNumber(this.selectedKursusId)
+      .subscribe({
+        next: (res: any) => {
+          const nextNumber = (res.data || 0) + 1;
+          this.generatedBatchName = `${this.selectedKursusNama} #${nextNumber}`;
+          this.batchForm.plbNamaBatch = this.generatedBatchName;
+        },
+        error: () => {
+          this.generatedBatchName = `${this.selectedKursusNama} #1`;
+          this.batchForm.plbNamaBatch = this.generatedBatchName;
+        },
+      });
+  }
+
+  // ✅ Buka modal batch (dipanggil dari tombol "Terbitkan")
+  openBatchModal(kursusId: number, kursusNama: string) {
+    this.selectedKursusId = kursusId;
+    this.selectedKursusNama = kursusNama;
+    this.batchForm = {
+      plbKrsId: kursusId,
+      plbNamaBatch: "",
+      plbStatus: 0,
+    };
+
+    this.generatePreviewBatchName();
+    this.showBatchModal = true;
+  }
+
+  saveBatch() {
+    if (!this.batchForm.plbNamaBatch) {
+      Swal.fire("Warning", "Nama batch tidak boleh kosong!", "warning");
+      return;
+    }
+
+    this.isSavingBatch = true;
+
+    this.pelatihanBatchService.create(this.batchForm).subscribe({
+      next: (batchRes: any) => {
+        this.isSavingBatch = false;
+
+        if (batchRes.code === 201) {
+          Swal.fire({
+            icon: "success",
+            title: "Berhasil!",
+            text: `Batch "${batchRes.data?.plbNamaBatch || this.batchForm.plbNamaBatch}" berhasil dibuat!`,
+            timer: 2000,
+            showConfirmButton: false,
+          });
+
+          this.closeBatchModal();
+          this.loadKursus();
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Gagal!",
+            text: batchRes.message,
+          });
+        }
+      },
+      error: (err) => {
+        this.isSavingBatch = false;
+
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: err.error?.message || "Terjadi kesalahan saat membuat batch",
+        });
+      },
+    });
+  }
+
+  closeBatchModal() {
+    this.showBatchModal = false;
+  }
+
+  // ✅ MODAL KONFIRMASI PUBLISH - Sekarang panggil openBatchModal
+  publishKursus(id: number, nama: string) {
+    this.openBatchModal(id, nama);
+  }
+
+  // ✅ MODAL KONFIRMASI PUBLISH - Override yang lama
+  showPublishModal: boolean = false;
+  publishId: number | null = null;
+
+  openPublishModal(id: number, nama: string) {
+    // Alihkan ke batch modal
+    this.openBatchModal(id, nama);
+  }
+
+  closePublishModal() {
+    this.showPublishModal = false;
+    this.publishId = null;
+  }
+
+  confirmPublish() {
+    // Tidak dipakai lagi, karena pake batch modal
+    this.closePublishModal();
+  }
+
+  // ========== REST OF METHODS (applyFilter, sort, pagination, dll) ==========
   applyFilter() {
     let data = [...this.allData];
-
-    // Apply status filter
     if (this.currentFilter === "draft") {
       data = data.filter((item) => item.krsPublishStatus === 1);
     } else if (this.currentFilter === "published") {
       data = data.filter((item) => item.krsPublishStatus === 2);
     }
-
-    // Apply search filter
     if (this.searchText) {
       const lower = this.searchText.toLowerCase();
       data = data.filter(
@@ -121,8 +227,6 @@ export class ManageTrainingComponent implements OnInit {
           item.krsJenis?.toLowerCase().includes(lower),
       );
     }
-
-    // Apply sorting
     if (this.sortBy === "name") {
       data.sort((a, b) => a.krsNama?.localeCompare(b.krsNama || "") || 0);
     } else if (this.sortBy === "date") {
@@ -132,7 +236,6 @@ export class ManageTrainingComponent implements OnInit {
           new Date(a.krsModifDate).getTime(),
       );
     }
-
     this.filteredData = data;
     this.updatePagination();
   }
@@ -156,8 +259,7 @@ export class ManageTrainingComponent implements OnInit {
   updatePagination() {
     this.totalPages = Math.ceil(this.filteredData.length / this.pageSize) || 1;
     const start = (this.currentPage - 1) * this.pageSize;
-    const end = start + this.pageSize;
-    this.pagedData = this.filteredData.slice(start, end);
+    this.pagedData = this.filteredData.slice(start, start + this.pageSize);
   }
 
   onPageSizeChange() {
@@ -185,7 +287,6 @@ export class ManageTrainingComponent implements OnInit {
     return text.substring(0, maxLength) + "...";
   }
 
-  // ========== MODAL CREATE / EDIT ==========
   openCreateModal() {
     this.resetForm();
     this.isEditMode = false;
@@ -197,7 +298,6 @@ export class ManageTrainingComponent implements OnInit {
     this.resetForm();
     this.isEditMode = true;
     this.editId = item.krsId;
-
     this.formData = {
       krsNama: item.krsNama,
       krsJenis: item.krsJenis,
@@ -205,7 +305,6 @@ export class ManageTrainingComponent implements OnInit {
       krsSasaran: item.krsSasaran || "",
       krsGambar: item.krsGambar,
     };
-
     this.showModal = true;
   }
 
@@ -240,7 +339,6 @@ export class ManageTrainingComponent implements OnInit {
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      // Validate file type (only images)
       if (!file.type.startsWith("image/")) {
         Swal.fire({
           icon: "warning",
@@ -249,8 +347,6 @@ export class ManageTrainingComponent implements OnInit {
         });
         return;
       }
-
-      // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         Swal.fire({
           icon: "warning",
@@ -259,14 +355,12 @@ export class ManageTrainingComponent implements OnInit {
         });
         return;
       }
-
       this.selectedFile = file;
       this.fileName = file.name;
     }
   }
 
   saveKursus() {
-    // Validate required fields
     if (!this.formData.krsNama || this.formData.krsNama.trim() === "") {
       Swal.fire({
         icon: "warning",
@@ -275,7 +369,6 @@ export class ManageTrainingComponent implements OnInit {
       });
       return;
     }
-
     if (!this.formData.krsJenis) {
       Swal.fire({
         icon: "warning",
@@ -286,7 +379,6 @@ export class ManageTrainingComponent implements OnInit {
     }
 
     this.isSaving = true;
-
     const kursusData = {
       krsId: this.editId,
       krsNama: this.formData.krsNama,
@@ -298,7 +390,6 @@ export class ManageTrainingComponent implements OnInit {
     };
 
     if (this.isEditMode) {
-      // UPDATE
       this.kursusService.update(kursusData, this.selectedFile).subscribe({
         next: (res: any) => {
           this.isSaving = false;
@@ -322,7 +413,6 @@ export class ManageTrainingComponent implements OnInit {
         },
         error: (err) => {
           this.isSaving = false;
-          console.error(err);
           Swal.fire({
             icon: "error",
             title: "Error!",
@@ -331,7 +421,6 @@ export class ManageTrainingComponent implements OnInit {
         },
       });
     } else {
-      // CREATE
       this.kursusService.create(kursusData, this.selectedFile).subscribe({
         next: (res: any) => {
           this.isSaving = false;
@@ -355,7 +444,6 @@ export class ManageTrainingComponent implements OnInit {
         },
         error: (err) => {
           this.isSaving = false;
-          console.error(err);
           Swal.fire({
             icon: "error",
             title: "Error!",
@@ -366,7 +454,6 @@ export class ManageTrainingComponent implements OnInit {
     }
   }
 
-  // Navigation
   isiKehadiran(item: Kursus) {
     console.log("Isi Kehadiran:", item.krsNama);
   }
@@ -402,23 +489,24 @@ export class ManageTrainingComponent implements OnInit {
     }
   }
 
+  goToMateri(krsId: number) {
+    this.router.navigate(["/manage-training", krsId]);
+  }
+
   // ===== MODAL KONFIRMASI HAPUS =====
   showDeleteModal: boolean = false;
   deleteId: number | null = null;
 
-  // Buka modal konfirmasi hapus
   openDeleteModal(id: number) {
     this.deleteId = id;
     this.showDeleteModal = true;
   }
 
-  // Tutup modal konfirmasi hapus
   closeDeleteModal() {
     this.showDeleteModal = false;
     this.deleteId = null;
   }
 
-  // Konfirmasi hapus (panggil API delete)
   confirmDelete() {
     if (this.deleteId) {
       this.kursusService.delete(this.deleteId, "admin").subscribe({
@@ -442,7 +530,6 @@ export class ManageTrainingComponent implements OnInit {
           }
         },
         error: (err) => {
-          console.error(err);
           Swal.fire({
             icon: "error",
             title: "Error!",
@@ -453,64 +540,7 @@ export class ManageTrainingComponent implements OnInit {
     }
   }
 
-  // Update method deleteKursus - panggil modal, bukan langsung hapus
   deleteKursus(id: number) {
-    this.openDeleteModal(id); // ← Ganti dengan modal
-  }
-
-  // ===== MODAL KONFIRMASI PUBLISH =====
-  showPublishModal: boolean = false;
-  publishId: number | null = null;
-
-  // Buka modal konfirmasi publish
-  openPublishModal(id: number) {
-    this.publishId = id;
-    this.showPublishModal = true;
-  }
-
-  // Tutup modal konfirmasi publish
-  closePublishModal() {
-    this.showPublishModal = false;
-    this.publishId = null;
-  }
-
-  // Konfirmasi publish (panggil API publish)
-  confirmPublish() {
-    if (this.publishId) {
-      this.kursusService.publish(this.publishId, "admin").subscribe({
-        next: (res: any) => {
-          if (res && res.status === 200) {
-            this.closePublishModal();
-            Swal.fire({
-              icon: "success",
-              title: "Diterbitkan!",
-              text: "Pelatihan berhasil dipublikasikan",
-              timer: 1500,
-              showConfirmButton: false,
-            });
-            this.loadKursus();
-          } else {
-            Swal.fire({
-              icon: "error",
-              title: "Gagal!",
-              text: res?.message || "Gagal menerbitkan data",
-            });
-          }
-        },
-        error: (err) => {
-          console.error(err);
-          Swal.fire({
-            icon: "error",
-            title: "Error!",
-            text: "Terjadi kesalahan saat menerbitkan data",
-          });
-        },
-      });
-    }
-  }
-
-  // Update method publishKursus - panggil modal, bukan langsung
-  publishKursus(id: number) {
-    this.openPublishModal(id);
+    this.openDeleteModal(id);
   }
 }

@@ -1,0 +1,438 @@
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <!-- HEADER -->
+      <div
+        class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom"
+      >
+        <div class="d-flex align-items-center gap-3">
+          <i class="bi bi-briefcase-fill fs-4" style="color: #ba0403"></i>
+          <h5 class="mb-0 fw-bold">Manajemen Jabatan</h5>
+        </div>
+
+        <!-- TOMBOL KEMBALI KE ORGANISASI -->
+        <button class="btn-karyawan-elegant" (click)="goBackToOrganisasi()">
+          <i class="bi bi-arrow-left-short"></i>
+          <span>Kembali ke Organisasi</span>
+        </button>
+      </div>
+
+      <!-- TOOLBAR -->
+      <div
+        class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2"
+      >
+        <!-- LEFT: BUTTON -->
+        <button class="btn-modern" (click)="openCreateModal()">
+          <i class="bi bi-plus-lg"></i> Tambah Jabatan
+        </button>
+
+        <!-- CENTER: SEARCH -->
+        <div style="width: 320px">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0">
+              <i class="bi bi-search"></i>
+            </span>
+            <input
+              type="text"
+              class="form-control border-start-0 ps-0"
+              placeholder="Cari kode atau nama jabatan..."
+              [(ngModel)]="searchKeyword"
+              (keyup)="onSearchKeyUp()"
+              (keyup.enter)="onSearchEnter()"
+              style="border-radius: 0 10px 10px 0"
+            />
+            <button
+              *ngIf="searchKeyword"
+              class="btn btn-clear"
+              (click)="clearSearch()"
+              style="border-radius: 0 10px 10px 0"
+              title="Clear search"
+            >
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT: Page Size -->
+        <select
+          class="form-select"
+          style="width: 100px"
+          [(ngModel)]="pageSize"
+          (change)="onPageSizeChange()"
+        >
+          <option *ngFor="let opt of pageSizeOptions" [value]="opt">
+            {{ opt }} Baris
+          </option>
+        </select>
+      </div>
+
+      <!-- LOADING -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border" role="status" style="color: #ba0403">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-wrapper" *ngIf="!loading">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th
+                style="width: 50px"
+                (click)="onSort('jbnId')"
+                class="sortable"
+              >
+                No <i [class]="'bi ' + getSortIcon('jbnId')"></i>
+              </th>
+              <th (click)="onSort('jbnKode')" class="sortable">
+                Kode <i [class]="'bi ' + getSortIcon('jbnKode')"></i>
+              </th>
+              <th (click)="onSort('jbnNama')" class="sortable">
+                Nama Jabatan <i [class]="'bi ' + getSortIcon('jbnNama')"></i>
+              </th>
+              <th (click)="onSort('jbnLevelJabatan')" class="sortable">
+                Level <i [class]="'bi ' + getSortIcon('jbnLevelJabatan')"></i>
+              </th>
+              <th>Deskripsi</th>
+              <th (click)="onSort('jbnStatus')" class="sortable">
+                Status <i [class]="'bi ' + getSortIcon('jbnStatus')"></i>
+              </th>
+              <th style="width: 120px">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of jabatanList; let i = index">
+              <td>{{ page * pageSize + i + 1 }}</td>
+              <td class="fw-semibold">
+                <span
+                  class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-2"
+                >
+                  {{ item.jbnKode }}
+                </span>
+              </td>
+              <td>{{ item.jbnNama }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="getLevelBadgeClass(item.jbnLevelJabatan)"
+                >
+                  {{ getLevelText(item.jbnLevelJabatan) }}
+                </span>
+              </td>
+              <td>
+                <span class="text-muted small">
+                  {{
+                    item.deskripsi?.length > 50
+                      ? (item.deskripsi | slice: 0 : 50) + "..."
+                      : item.deskripsi || "-"
+                  }}
+                </span>
+              </td>
+              <td>
+                <span [ngClass]="getStatusBadgeClass(item.jbnStatus)">
+                  {{ getStatusText(item.jbnStatus) }}
+                </span>
+              </td>
+              <td>
+                <div class="action-container">
+                  <button
+                    class="btn-icon"
+                    (click)="openDetailModal(item)"
+                    title="Detail"
+                  >
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button
+                    class="btn-icon"
+                    (click)="openEditModal(item)"
+                    title="Edit"
+                  >
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <label class="switch" title="Toggle Status">
+                    <input
+                      type="checkbox"
+                      [checked]="item.jbnStatus === 0"
+                      (change)="confirmToggleStatus($event, item)"
+                    />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="jabatanList.length === 0">
+              <td colspan="7" class="text-center py-5 text-muted">
+                <i class="bi bi-inbox fs-1"></i>
+                <p class="mt-2">Tidak ada data jabatan</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PAGINATION -->
+      <div
+        class="d-flex justify-content-between align-items-center mt-3"
+        *ngIf="!loading && totalPages > 0"
+      >
+        <div class="text-muted small">
+          Menampilkan {{ page * pageSize + 1 }} -
+          {{ min(page * pageSize + pageSize, totalElements) }} dari
+          {{ totalElements }} data
+        </div>
+        <div class="d-flex gap-2">
+          <button
+            class="btn-pagination"
+            (click)="onPageChange(page - 1)"
+            [disabled]="page === 0"
+          >
+            <i class="bi bi-chevron-left"></i> Prev
+          </button>
+          <span class="px-3 py-1 bg-light rounded">
+            Halaman {{ page + 1 }} / {{ totalPages }}
+          </span>
+          <button
+            class="btn-pagination"
+            (click)="onPageChange(page + 1)"
+            [disabled]="page >= totalPages - 1"
+          >
+            Next <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FORM JABATAN (CREATE/EDIT) -->
+<ng-template #modalJabatan let-modal>
+  <div class="modal-header border-0 pb-0">
+    <h5 class="modal-title fw-bold">
+      <i class="bi bi-briefcase-fill me-2" style="color: #ba0403"></i>
+      {{ isEdit ? "Edit Jabatan" : "Tambah Jabatan" }}
+    </h5>
+    <button type="button" class="btn-close-custom" (click)="closeModal()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="modal-body pt-2">
+    <form #jabatanForm="ngForm">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold">
+            Kode Jabatan <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="formJabatan.jbnKode"
+            name="jbnKode"
+            required
+            placeholder="Contoh: MGR, SPV, ADM"
+            [readonly]="isEdit"
+            [class.bg-light]="isEdit"
+          />
+          <small class="text-muted"
+            >Kode tidak boleh mengandung spasi, akan otomatis uppercase</small
+          >
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold">
+            Nama Jabatan <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="formJabatan.jbnNama"
+            name="jbnNama"
+            required
+            placeholder="Contoh: Manager, Supervisor, Staff Administrasi"
+          />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold">Level Jabatan</label>
+          <select
+            class="form-select"
+            [(ngModel)]="formJabatan.jbnLevelJabatan"
+            name="jbnLevelJabatan"
+          >
+            <option *ngFor="let opt of levelOptions" [value]="opt.value">
+              {{ opt.label }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-12 mb-3">
+          <label class="form-label fw-semibold">Deskripsi</label>
+          <textarea
+            class="form-control"
+            rows="3"
+            [(ngModel)]="formJabatan.deskripsi"
+            name="deskripsi"
+            placeholder="Deskripsi tugas dan tanggung jawab jabatan..."
+          ></textarea>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer border-0 pt-0">
+    <button class="btn-modern-outline" (click)="closeModal()">Batal</button>
+    <button
+      class="btn-modern"
+      (click)="saveJabatan()"
+      [disabled]="!jabatanForm.valid"
+    >
+      {{ isEdit ? "Update" : "Simpan" }}
+    </button>
+  </div>
+</ng-template>
+
+<!-- MODAL DETAIL JABATAN -->
+<ng-template #modalDetail let-modal>
+  <div class="modal-header border-0 pb-0">
+    <h5 class="modal-title fw-bold">
+      <i class="bi bi-info-circle-fill me-2 text-info"></i>
+      Detail Jabatan
+    </h5>
+    <button type="button" class="btn-close-custom" (click)="closeModal()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="modal-body" *ngIf="selectedJabatan">
+    <div class="text-center mb-4">
+      <div
+        class="avatar-large mx-auto mb-3"
+        style="background: linear-gradient(135deg, #ba0403, #8e0302)"
+      >
+        <i class="bi bi-briefcase-fill fs-1"></i>
+      </div>
+      <h5 class="mb-0">{{ selectedJabatan.jbnNama }}</h5>
+      <span
+        class="badge bg-secondary bg-opacity-10 text-secondary mt-2 px-3 py-2"
+      >
+        {{ selectedJabatan.jbnKode }}
+      </span>
+      <span
+        [ngClass]="getStatusBadgeClass(selectedJabatan.jbnStatus)"
+        class="ms-2"
+      >
+        {{ getStatusText(selectedJabatan.jbnStatus) }}
+      </span>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Kode Jabatan</label>
+          <p class="fw-semibold mb-0">{{ selectedJabatan.jbnKode || "-" }}</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Level Jabatan</label>
+          <p class="fw-semibold mb-0">
+            {{ getLevelText(selectedJabatan.jbnLevelJabatan) }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="info-group">
+          <label class="text-muted small">Deskripsi</label>
+          <p class="fw-semibold mb-0">{{ selectedJabatan.deskripsi || "-" }}</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Dibuat Pada</label>
+          <p class="fw-semibold mb-0">
+            {{
+              selectedJabatan.jbnCreateDate | date: "dd MMM yyyy HH:mm" || "-"
+            }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Dibuat Oleh</label>
+          <p class="fw-semibold mb-0">
+            {{ selectedJabatan.jbnCreateBy || "-" }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Terakhir Diupdate</label>
+          <p class="fw-semibold mb-0">
+            {{
+              selectedJabatan.jbnModifDate | date: "dd MMM yyyy HH:mm" || "-"
+            }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Diupdate Oleh</label>
+          <p class="fw-semibold mb-0">
+            {{ selectedJabatan.jbnModifBy || "-" }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer border-0">
+    <button class="btn-modern-outline" (click)="closeModal()">Tutup</button>
+    <button
+      class="btn-modern"
+      (click)="openEditModal(selectedJabatan); closeModal()"
+    >
+      <i class="bi bi-pencil"></i> Edit
+    </button>
+  </div>
+</ng-template>
+
+<!-- MODAL KONFIRMASI TOGGLE STATUS -->
+<div class="modal-overlay" *ngIf="showToggleModal">
+  <div class="modal-container" style="max-width: 450px">
+    <div class="modal-header">
+      <h3>
+        <i class="bi bi-exclamation-circle-fill"></i>
+        Konfirmasi Status
+      </h3>
+      <span class="modal-close" (click)="closeToggleModal()">&times;</span>
+    </div>
+
+    <div class="modal-body-landscape" style="text-align: center">
+      <i
+        class="bi bi-toggle-on"
+        style="
+          font-size: 64px;
+          color: #ba0403;
+          margin-bottom: 16px;
+          display: block;
+        "
+      ></i>
+
+      <p style="font-size: 16px; font-weight: 500; margin-bottom: 8px">
+        Ubah Status Jabatan?
+      </p>
+
+      <p class="text-muted" style="font-size: 13px; color: #64748b">
+        "{{ toggleItem?.jbnNama }}" akan menjadi
+        <strong>
+          {{ toggleNewStatus === "0" ? "AKTIF" : "NONAKTIF" }}
+        </strong>
+      </p>
+    </div>
+
+    <div class="modal-footer" style="justify-content: center">
+      <button class="btn-batal" (click)="closeToggleModal()">Batal</button>
+      <button class="btn-simpan" (click)="confirmToggleAction()">
+        <i class="bi bi-check-lg"></i> Ya, Ubah
+      </button>
+    </div>
+  </div>
+</div>

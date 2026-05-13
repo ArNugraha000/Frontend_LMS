@@ -1,0 +1,696 @@
+<div class="wrapper-white">
+  <!-- HEADER dengan Gambar Kursus, Nama Pelatihan dan Batch -->
+  <div class="course-header">
+    <div class="course-header-left">
+      <div class="course-image-header">
+        <img
+          [src]="courseImageUrl || 'assets/default-course.jpg'"
+          (error)="courseImageUrl = 'assets/default-course.jpg'"
+          alt="Course Image"
+          class="course-img-header"
+        />
+      </div>
+      <div class="course-info-header">
+        <h1 class="course-name">{{ kursusNama || "Memuat..." }}</h1>
+        <div class="batch-info">
+          <span class="batch-badge">
+            <i class="bi bi-collection"></i> Batch: {{ batchName || plbId }}
+          </span>
+          <span class="batch-badge">
+            <i class="bi bi-tag"></i> Kode: {{ krsId }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <button class="btn-icon" (click)="goBack()">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+  </div>
+
+  <!-- STATISTIK CARD - 1 Baris Penuh -->
+  <div class="stats-container-full">
+    <div class="stat-card-full">
+      <div class="stat-icon-full blue">
+        <i class="bi bi-calendar-week"></i>
+      </div>
+      <div class="stat-info-full">
+        <div class="stat-value-full">{{ pertemuanList.length }}</div>
+        <div class="stat-label-full">Pertemuan</div>
+      </div>
+    </div>
+
+    <div class="stat-card-full">
+      <div class="stat-icon-full green">
+        <i class="bi bi-file-earmark-play"></i>
+      </div>
+      <div class="stat-info-full">
+        <div class="stat-value-full">{{ totalMateriCount }}</div>
+        <div class="stat-label-full">Total</div>
+      </div>
+    </div>
+
+    <div class="stat-card-full">
+      <div class="stat-icon-full orange">
+        <i class="bi bi-camera-video"></i>
+      </div>
+      <div class="stat-info-full">
+        <div class="stat-value-full">{{ videoCount }}</div>
+        <div class="stat-label-full">Video</div>
+      </div>
+    </div>
+
+    <div class="stat-card-full">
+      <div class="stat-icon-full purple">
+        <i class="bi bi-chat-left-text"></i>
+      </div>
+      <div class="stat-info-full">
+        <div class="stat-value-full">{{ quizCount }}</div>
+        <div class="stat-label-full">Quiz</div>
+      </div>
+    </div>
+
+    <div class="stat-card-full">
+      <div class="stat-icon-full danger">
+        <i class="bi bi-file-earmark-pdf"></i>
+      </div>
+      <div class="stat-info-full">
+        <div class="stat-value-full">{{ pdfCount }}</div>
+        <div class="stat-label-full">PDF</div>
+      </div>
+    </div>
+
+    <div class="stat-card-full">
+      <div class="stat-icon-full warning">
+        <i class="bi bi-file-earmark-ppt"></i>
+      </div>
+      <div class="stat-info-full">
+        <div class="stat-value-full">{{ pptCount }}</div>
+        <div class="stat-label-full">PPT</div>
+      </div>
+    </div>
+
+    <div class="stat-card-full">
+      <div class="stat-icon-full info">
+        <i class="bi bi-book"></i>
+      </div>
+      <div class="stat-info-full">
+        <div class="stat-value-full">{{ paragrafCount }}</div>
+        <div class="stat-label-full">Paragraf</div>
+      </div>
+    </div>
+
+    <div class="stat-card-full">
+      <div class="stat-icon-full secondary">
+        <i class="bi bi-code-slash"></i>
+      </div>
+      <div class="stat-info-full">
+        <div class="stat-value-full">{{ linkCount }}</div>
+        <div class="stat-label-full">Link</div>
+      </div>
+    </div>
+
+    <div class="stat-card-full">
+      <div class="stat-icon-full dark">
+        <i class="bi bi-link-45deg"></i>
+      </div>
+      <div class="stat-info-full">
+        <div class="stat-value-full">{{ pretestCount + posttestCount }}</div>
+        <div class="stat-label-full">Test</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO CARD -->
+  <div class="menu-card mt-3">
+    <div class="menu-text">
+      <div class="menu-title">Informasi</div>
+      <div class="menu-sub">
+        Atur pertemuan dan jadwal akses materi untuk setiap pertemuan. Setiap
+        materi dapat diatur jadwal aksesnya secara terpisah. Tanggal akses batch
+        akan otomatis terisi berdasarkan jadwal materi terkecil dan terbesar.
+      </div>
+    </div>
+    <div class="menu-icon blue">
+      <i class="bi bi-info-circle"></i>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Memuat data...</p>
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div class="action-buttons" *ngIf="!loading">
+    <button class="btn-modern" (click)="openPertemuanModal()">
+      <i class="bi bi-plus-circle"></i>
+      <span>Tambah Pertemuan Baru</span>
+    </button>
+  </div>
+
+  <!-- PERTEMUAN LIST -->
+  <div *ngIf="!loading && pertemuanList.length === 0" class="empty-state">
+    <i class="bi bi-calendar-x"></i>
+    <p>
+      Belum ada pertemuan. Klik "Tambah Pertemuan" untuk membuat pertemuan baru.
+    </p>
+  </div>
+
+  <div
+    *ngFor="let pertemuan of pertemuanList; let idx = index"
+    class="pertemuan-card"
+  >
+    <div class="pertemuan-header">
+      <div class="pertemuan-info">
+        <h3>
+          <i class="bi bi-calendar-week"></i>
+          Pertemuan {{ pertemuan.nomorPertemuan }}
+        </h3>
+        <div class="pertemuan-meta">
+          <span class="badge badge-success"> AKTIF </span>
+          <span
+            class="date-range"
+            *ngIf="pertemuan.kptTglAksesMulai || pertemuan.kptTglAksesSelesai"
+          >
+            <i class="bi bi-calendar-range"></i>
+            {{ formatDate(pertemuan.kptTglAksesMulai) }} -
+            {{ formatDate(pertemuan.kptTglAksesSelesai) }}
+          </span>
+        </div>
+      </div>
+      <div class="pertemuan-actions">
+        <button
+          class="btn-icon-small"
+          (click)="openMateriModal(pertemuan)"
+          title="Atur Jadwal Materi"
+        >
+          <i class="bi bi-clock-history"></i>
+        </button>
+        <button
+          class="btn-icon-small"
+          (click)="openPertemuanModal(pertemuan)"
+          title="Edit Pertemuan"
+        >
+          <i class="bi bi-pencil"></i>
+        </button>
+        <button
+          class="btn-icon-small danger"
+          (click)="confirmDeletePertemuan(pertemuan)"
+          title="Hapus Pertemuan"
+        >
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- MATERI LIST FOR THIS PERTEMUAN -->
+    <div
+      class="materi-list"
+      *ngIf="pertemuan.materiList && pertemuan.materiList.length > 0"
+    >
+      <div class="materi-header">
+        <span
+          ><i class="bi bi-file-earmark-play"></i> Daftar Materi & Jadwal
+          Akses</span
+        >
+        <span class="materi-count"
+          >{{ pertemuan.materiList.length }} materi</span
+        >
+      </div>
+      <div
+        class="materi-row"
+        *ngFor="let materi of pertemuan.materiList; let i = index"
+      >
+        <div class="materi-info">
+          <div class="materi-number">{{ i + 1 }}</div>
+          <div class="materi-detail">
+            <div class="materi-title">{{ materi.judulMateri }}</div>
+            <div class="materi-type">
+              <span
+                class="badge-type"
+                [ngClass]="
+                  materi.jenisMateri === 'QUIZ' ? 'badge-quiz' : 'badge-video'
+                "
+              >
+                {{ materi.jenisMateri }}
+              </span>
+              <span class="materi-duration" *ngIf="materi.waktuMelihat">
+                <i class="bi bi-clock"></i> {{ materi.waktuMelihat }} menit
+              </span>
+              <span class="materi-urutan" *ngIf="materi.tamUrutan">
+                <i class="bi bi-sort-numeric-down"></i> Urutan:
+                {{ materi.tamUrutan }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="materi-schedule">
+          <div class="schedule-item">
+            <i class="bi bi-play-circle"></i>
+            <span>Mulai: {{ formatDate(materi.tamTglAksesMulai) }}</span>
+          </div>
+          <div class="schedule-item">
+            <i class="bi bi-stop-circle"></i>
+            <span>Selesai: {{ formatDate(materi.tamTglAksesSelesai) }}</span>
+          </div>
+        </div>
+        <div class="materi-actions">
+          <button
+            class="btn-icon-mini"
+            (click)="deleteMateriJadwal(materi.tamId, pertemuan)"
+            title="Hapus dari pertemuan"
+          >
+            <i class="bi bi-x-circle"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="no-materi"
+      *ngIf="!pertemuan.materiList || pertemuan.materiList.length === 0"
+    >
+      <i class="bi bi-info-circle"></i> Belum ada materi yang dijadwalkan
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PERTEMUAN (TAMBAH/EDIT) -->
+<div class="modal-overlay" *ngIf="showPertemuanModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3>
+        <i class="bi" [ngClass]="mode === 'add' ? 'bi-plus' : 'bi-pencil'"></i>
+        {{ mode === "add" ? "Tambah Pertemuan" : "Edit Pertemuan" }}
+      </h3>
+      <span class="modal-close" (click)="closePertemuanModal()">×</span>
+    </div>
+    <div class="modal-body">
+      <!-- Informasi Nomor Pertemuan -->
+      <div class="info-pertemuan" *ngIf="mode === 'add'">
+        <i class="bi bi-info-circle-fill"></i>
+        <span
+          >Pertemuan ke-{{ nextPertemuanNumber }} akan dibuat secara
+          otomatis</span
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Nama Pertemuan <span class="required">*</span></label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="selectedPertemuan.kptNama"
+          placeholder="Contoh: 1"
+          readonly
+          *ngIf="mode === 'add'"
+        />
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="selectedPertemuan.kptNama"
+          placeholder="Contoh: 1"
+          *ngIf="mode === 'edit'"
+        />
+        <small class="text-muted" *ngIf="mode === 'add'">
+          <i class="bi bi-plus-circle"></i> Nomor pertemuan akan otomatis diisi
+          ({{ nextPertemuanNumber }})
+        </small>
+      </div>
+
+      <!-- Peringatan Overlap -->
+      <div class="alert-overlap" *ngIf="dateOverlapError">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <div class="alert-content">
+          <strong>Terjadi Overlap Tanggal!</strong>
+          <span>{{ dateOverlapError }}</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tanggal Mulai Akses <span class="required">*</span></label>
+          <input
+            type="datetime-local"
+            class="form-control"
+            [(ngModel)]="selectedPertemuan.kptTglAksesMulai"
+            (change)="validatePertemuanDates()"
+            [class.is-invalid]="
+              !selectedPertemuan.kptTglAksesMulai && showValidation
+            "
+            required
+          />
+          <small class="text-info">
+            <i class="bi bi-calendar-check"></i> Pilih tanggal dan jam mulai
+            (wajib)
+          </small>
+          <div
+            class="invalid-feedback"
+            *ngIf="!selectedPertemuan.kptTglAksesMulai && showValidation"
+          >
+            <i class="bi bi-exclamation-circle"></i> Tanggal mulai harus diisi!
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Tanggal Selesai Akses <span class="required">*</span></label>
+          <input
+            type="datetime-local"
+            class="form-control"
+            [(ngModel)]="selectedPertemuan.kptTglAksesSelesai"
+            (change)="validatePertemuanDates()"
+            [class.is-invalid]="
+              !selectedPertemuan.kptTglAksesSelesai && showValidation
+            "
+            required
+          />
+          <small class="text-info">
+            <i class="bi bi-calendar-x"></i> Pilih tanggal dan jam selesai
+            (wajib)
+          </small>
+          <div
+            class="invalid-feedback"
+            *ngIf="!selectedPertemuan.kptTglAksesSelesai && showValidation"
+          >
+            <i class="bi bi-exclamation-circle"></i> Tanggal selesai harus
+            diisi!
+          </div>
+        </div>
+      </div>
+
+      <!-- Daftar Pertemuan yang Sudah Ada -->
+      <div class="existing-meetings" *ngIf="pertemuanList.length > 0">
+        <div class="existing-header">
+          <i class="bi bi-calendar-week"></i>
+          <span>Daftar Pertemuan yang Sudah Ada:</span>
+        </div>
+        <div class="existing-list">
+          <div
+            *ngFor="let p of pertemuanList"
+            class="existing-item"
+            [class.highlight-conflict]="isConflictWith(p)"
+          >
+            <div class="meeting-number">Pertemuan {{ p.nomorPertemuan }}</div>
+            <div class="meeting-date">
+              <i class="bi bi-calendar-range"></i>
+              {{ formatDate(p.kptTglAksesMulai) }} -
+              {{ formatDate(p.kptTglAksesSelesai) }}
+            </div>
+            <div class="conflict-badge" *ngIf="isConflictWith(p)">
+              <i class="bi bi-exclamation-circle-fill"></i> Overlap!
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-batal" (click)="closePertemuanModal()">Batal</button>
+      <button
+        class="btn-simpan"
+        (click)="savePertemuan()"
+        [disabled]="loading || !isFormValid()"
+      >
+        {{ mode === "add" ? "Simpan" : "Update" }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL JADWAL MATERI -->
+<div class="modal-overlay" *ngIf="showMateriModal">
+  <div class="modal-container modal-large">
+    <div class="modal-header">
+      <h3>
+        <i class="bi bi-clock-history"></i>
+        Atur Jadwal Materi - Pertemuan
+        {{ getNomorPertemuan(selectedPertemuan) }}
+      </h3>
+      <span class="modal-close" (click)="closeMateriModal()">×</span>
+    </div>
+    <div class="modal-body">
+      <!-- Info Rentang Waktu Pertemuan -->
+      <div
+        class="info-warning"
+        *ngIf="
+          selectedPertemuan.kptTglAksesMulai &&
+          selectedPertemuan.kptTglAksesSelesai
+        "
+      >
+        <i class="bi bi-info-circle-fill"></i>
+        <span
+          >Rentang waktu pertemuan:
+          {{ formatDate(selectedPertemuan.kptTglAksesMulai) }} -
+          {{ formatDate(selectedPertemuan.kptTglAksesSelesai) }}</span
+        >
+      </div>
+
+      <!-- Tombol Tambah Materi -->
+      <div class="form-group" style="margin-bottom: 20px">
+        <button
+          class="btn-add-materi"
+          (click)="addMateriToTemp()"
+          [disabled]="loading"
+        >
+          <i class="bi bi-plus-circle"></i> Tambah Materi
+        </button>
+      </div>
+
+      <!-- Daftar Materi yang Sudah Ditambahkan -->
+      <div *ngIf="tempMateriList.length === 0" class="empty-materi">
+        <i class="bi bi-inbox"></i>
+        <p>Belum ada materi. Klik "Tambah Materi" untuk menambahkan.</p>
+      </div>
+
+      <div
+        *ngFor="let materi of tempMateriList; let i = index"
+        class="materi-schedule-card"
+      >
+        <div class="materi-schedule-header">
+          <div class="materi-title-section">
+            <span class="materi-number-badge">{{ i + 1 }}</span>
+            <strong class="materi-name">{{ materi.judulMateri }}</strong>
+            <span
+              class="badge-type"
+              [ngClass]="
+                materi.jenisMateri === 'QUIZ' ? 'badge-quiz' : 'badge-video'
+              "
+            >
+              {{ materi.jenisMateri }}
+            </span>
+            <span *ngIf="materi.isExisting" class="badge-existing">
+              <i class="bi bi-check-circle"></i> Tersimpan
+            </span>
+          </div>
+          <button
+            class="btn-remove-materi"
+            (click)="removeMateriFromTemp(i)"
+            title="Hapus"
+          >
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+
+        <div class="materi-schedule-body">
+          <div class="schedule-row">
+            <div class="schedule-field">
+              <label class="field-label">
+                <i class="bi bi-play-circle"></i> Mulai Akses
+                <span class="required">*</span>
+              </label>
+              <input
+                type="datetime-local"
+                class="form-control"
+                [(ngModel)]="materi.tamTglAksesMulai"
+                (change)="validateMateriDate(materi)"
+                [min]="getMinMateriDate()"
+                [max]="getMaxMateriDate()"
+              />
+              <div
+                class="field-help"
+                *ngIf="
+                  materi.isExisting &&
+                  materi.tamTglAksesMulai &&
+                  !materi.dateError
+                "
+              >
+                <i class="bi bi-clock-history"></i> Sebelumnya:
+                {{ formatDate(materi.tamTglAksesMulai) }}
+              </div>
+              <div class="field-error" *ngIf="materi.dateError">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                {{ materi.dateError }}
+              </div>
+            </div>
+
+            <div class="schedule-field">
+              <label class="field-label">
+                <i class="bi bi-stop-circle"></i> Selesai Akses
+                <span class="required">*</span>
+              </label>
+              <input
+                type="datetime-local"
+                class="form-control"
+                [(ngModel)]="materi.tamTglAksesSelesai"
+                (change)="validateMateriDate(materi)"
+                [min]="getMinMateriDate()"
+                [max]="getMaxMateriDate()"
+              />
+              <div
+                class="field-help"
+                *ngIf="
+                  materi.isExisting &&
+                  materi.tamTglAksesSelesai &&
+                  !materi.dateError
+                "
+              >
+                <i class="bi bi-clock-history"></i> Sebelumnya:
+                {{ formatDate(materi.tamTglAksesSelesai) }}
+              </div>
+              <div class="field-error" *ngIf="materi.dateError">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                {{ materi.dateError }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-batal" (click)="closeMateriModal()">Batal</button>
+      <button
+        class="btn-simpan"
+        (click)="saveMateriSchedule()"
+        [disabled]="loading || !isMateriDatesValid"
+      >
+        <i class="bi bi-save"></i> Simpan Jadwal
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL KONFIRMASI HAPUS PERTEMUAN -->
+<div class="modal-overlay" *ngIf="showDeleteModal">
+  <div class="modal-container" style="max-width: 450px">
+    <div class="modal-header">
+      <h3><i class="bi bi-exclamation-triangle-fill"></i> Konfirmasi Hapus</h3>
+      <span class="modal-close" (click)="closeDeleteModal()">&times;</span>
+    </div>
+    <div class="modal-body-landscape" style="text-align: center">
+      <i
+        class="bi bi-trash3-fill"
+        style="
+          font-size: 64px;
+          color: #ba0403;
+          margin-bottom: 16px;
+          display: block;
+        "
+      ></i>
+      <p style="font-size: 16px; font-weight: 500; margin-bottom: 8px">
+        Yakin ingin
+        {{ deleteTarget?.kptStatus === 0 ? "menonaktifkan" : "mengaktifkan" }}
+        pertemuan ini?
+      </p>
+      <p class="text-muted" style="font-size: 13px; color: #64748b">
+        Pertemuan akan
+        {{ deleteTarget?.kptStatus === 0 ? "dinonaktifkan" : "diaktifkan" }} dan
+        tidak akan ditampilkan!
+      </p>
+    </div>
+    <div class="modal-footer" style="justify-content: center">
+      <button class="btn-batal" (click)="closeDeleteModal()">Batal</button>
+      <button
+        class="btn-simpan"
+        [style.background]="
+          deleteTarget?.kptStatus === 0
+            ? 'linear-gradient(135deg, #ba0403, #8e0302)'
+            : 'linear-gradient(135deg, #22c55e, #16a34a)'
+        "
+        (click)="executeDelete()"
+      >
+        <i
+          class="bi"
+          [ngClass]="
+            deleteTarget?.kptStatus === 0 ? 'bi-trash' : 'bi-check-circle'
+          "
+        ></i>
+        {{ deleteTarget?.kptStatus === 0 ? "Menghapus" : "Aktifkan" }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PILIH MATERI (CUSTOM) -->
+<div class="modal-overlay" *ngIf="showPilihMateriModal">
+  <div class="modal-container modal-select-materi">
+    <div class="modal-header">
+      <h3>
+        <i class="bi bi-box-seam"></i>
+        Pilih Materi
+      </h3>
+      <span class="modal-close" (click)="closePilihMateriModal()">×</span>
+    </div>
+    <div class="modal-body">
+      <div class="search-materi">
+        <div class="search-box">
+          <i class="bi bi-search"></i>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="searchMateriText"
+            (input)="filterMateri()"
+            placeholder="Cari materi..."
+          />
+        </div>
+      </div>
+
+      <div class="materi-grid">
+        <div
+          *ngFor="let materi of filteredAvailableMateri"
+          class="materi-card-item"
+          (click)="selectMateri(materi)"
+        >
+          <div class="materi-icon">
+            <i
+              class="bi"
+              [ngClass]="
+                materi.jenisMateri === 'QUIZ'
+                  ? 'bi-clipboard-check'
+                  : 'bi-file-earmark-play'
+              "
+            ></i>
+          </div>
+          <div class="materi-info-item">
+            <div class="materi-title-item">{{ materi.judulMateri }}</div>
+            <div class="materi-meta-item">
+              <span
+                class="badge-type-sm"
+                [ngClass]="
+                  materi.jenisMateri === 'QUIZ' ? 'badge-quiz' : 'badge-video'
+                "
+              >
+                {{ materi.jenisMateri }}
+              </span>
+              <span class="materi-duration-sm" *ngIf="materi.waktuMelihat">
+                <i class="bi bi-clock"></i> {{ materi.waktuMelihat }} menit
+              </span>
+            </div>
+          </div>
+          <div class="materi-select-icon">
+            <i class="bi bi-plus-circle-fill"></i>
+          </div>
+        </div>
+      </div>
+
+      <div
+        *ngIf="filteredAvailableMateri.length === 0"
+        class="empty-materi-search"
+      >
+        <i class="bi bi-inbox"></i>
+        <p>Tidak ada materi yang tersedia</p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-batal" (click)="closePilihMateriModal()">Tutup</button>
+    </div>
+  </div>
+</div>

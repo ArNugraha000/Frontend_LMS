@@ -1,0 +1,446 @@
+<!-- ================= CARD MENU ================= -->
+<div class="menu-container">
+  <div class="menu-card" (click)="goTo('profil')">
+    <div class="menu-text">
+      <span class="menu-sub">Profil Saya</span>
+      <span class="menu-title">Profil</span>
+    </div>
+    <div class="menu-icon blue">
+      <i class="bi bi-person"></i>
+    </div>
+  </div>
+
+  <div class="menu-card" (click)="goTo('beranda')">
+    <div class="menu-text">
+      <span class="menu-sub">Beranda</span>
+      <span class="menu-title">Beranda</span>
+    </div>
+    <div class="menu-icon red">
+      <i class="bi bi-grid"></i>
+    </div>
+  </div>
+
+  <div class="menu-card" (click)="goTo('materi')">
+    <div class="menu-text">
+      <span class="menu-sub">1. Kelola Materi</span>
+      <span class="menu-title">Materi</span>
+    </div>
+    <div class="menu-icon red">
+      <i class="bi bi-folder2-open"></i>
+    </div>
+  </div>
+
+  <div class="menu-card" (click)="goTo('pelatihan')">
+    <div class="menu-text">
+      <span class="menu-sub">2. Kelola Pelatihan</span>
+      <span class="menu-title">Pelatihan</span>
+    </div>
+    <div class="menu-icon red">
+      <i class="bi bi-folder2-open"></i>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-white py-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <h4 class="mb-0 fw-bold">
+          <i class="bi bi-file-earmark-text me-2" style="color: #ba0403"></i>
+          Pengajuan Evaluasi L3
+        </h4>
+        <button class="btn-modern" (click)="openCreateModal()">
+          <i class="bi bi-plus-lg"></i> Tambah Pengajuan
+        </button>
+      </div>
+    </div>
+
+    <!-- FILTER TABS BY STATUS -->
+    <div class="filter-tabs-container px-3 pt-3">
+      <div class="btn-group" role="group">
+        <button
+          *ngFor="let opt of statusOptions"
+          type="button"
+          class="btn-filter"
+          [class.active]="activeStatus === opt.value"
+          (click)="onStatusChange(opt.value)"
+        >
+          <i [class]="opt.icon + ' me-1'"></i> {{ opt.label }}
+        </button>
+      </div>
+      <div class="filter-info ms-3">
+        <span class="badge-filter-info">
+          <i class="bi bi-info-circle"></i>
+          Menampilkan pengajuan dengan status:
+          {{ getStatusFullText(activeStatus) }}
+        </span>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <!-- TOOLBAR -->
+      <div
+        class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2"
+      >
+        <div style="width: 320px">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0">
+              <i class="bi bi-search"></i>
+            </span>
+            <input
+              type="text"
+              class="form-control border-start-0 ps-0"
+              placeholder="Cari berdasarkan efektifitas..."
+              [(ngModel)]="searchKeyword"
+              (keyup)="onSearchKeyUp()"
+              (keyup.enter)="onSearchEnter()"
+              style="border-radius: 0 10px 10px 0"
+            />
+            <button
+              *ngIf="searchKeyword"
+              class="btn btn-clear"
+              (click)="clearSearch()"
+              style="border-radius: 0 10px 10px 0"
+              title="Clear search"
+            >
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+        </div>
+
+        <select
+          class="form-select"
+          style="width: 100px"
+          [(ngModel)]="pageSize"
+          (change)="onPageSizeChange()"
+        >
+          <option *ngFor="let opt of pageSizeOptions" [value]="opt">
+            {{ opt }} Baris
+          </option>
+        </select>
+      </div>
+
+      <!-- LOADING -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border" role="status" style="color: #ba0403">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-wrapper" *ngIf="!loading">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 50px">No</th>
+              <!-- ✅ PERUBAHAN: Judul kolom Batch/Pelatihan -->
+              <th>Karyawan</th>
+              <th>Batch Pelatihan</th>
+              <th>Efektifitas Sebelum</th>
+              <th>Efektifitas Sesudah</th>
+              <th>Status</th>
+              <th>Tanggal Dibuat</th>
+              <th style="width: 150px">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of pengajuanList; let i = index">
+              <td>{{ page * pageSize + i + 1 }}</td>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <div
+                    class="avatar-placeholder"
+                    style="background-color: #ba0403"
+                  >
+                    {{ item.karyawanName?.charAt(0) || "K" }}
+                  </div>
+                  {{ item.karyawanName || "Karyawan" }}
+                  <small class="text-muted"
+                    >({{ item.karyawanUsername }})</small
+                  >
+                </div>
+              </td>
+              <!-- ✅ PERUBAHAN: batchNama, bukan kursusJudul -->
+              <td>{{ item.batchNama || "-" }}</td>
+              <td>
+                <div class="text-preview">
+                  {{
+                    (item.evaEfektifitasSebelum?.length > 50
+                      ? (item.evaEfektifitasSebelum | slice: 0 : 50) + "..."
+                      : item.evaEfektifitasSebelum) || "-"
+                  }}
+                </div>
+              </td>
+              <td>
+                <div class="text-preview">
+                  {{
+                    (item.evaEfektifitasSesudah?.length > 50
+                      ? (item.evaEfektifitasSesudah | slice: 0 : 50) + "..."
+                      : item.evaEfektifitasSesudah) || "-"
+                  }}
+                </div>
+              </td>
+              <td>
+                <span [ngClass]="getStatusBadgeClass(item.evaStatus)">
+                  <i [class]="getStatusIcon(item.evaStatus)"></i>
+                  {{ getStatusText(item.evaStatus) }}
+                </span>
+              </td>
+              <td>
+                {{ item.evaCreatedDate | date: "dd/MM/yyyy HH:mm" || "-" }}
+              </td>
+              <td>
+                <div class="action-container">
+                  <button
+                    class="btn-icon"
+                    (click)="openDetailModal(item)"
+                    title="Detail"
+                  >
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button
+                    class="btn-icon"
+                    (click)="openEditModal(item)"
+                    title="Edit"
+                  >
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <!-- ✅ PERUBAHAN: item.evaStatus === 0/1/2 (number) -->
+                  <ng-container *ngIf="item.evaStatus === 0">
+                    <button
+                      class="btn-icon btn-approve"
+                      (click)="updateStatus(item.evaId!, 1)"
+                      title="Approve ke Peninjauan"
+                    >
+                      <i class="bi bi-check-lg"></i>
+                    </button>
+                  </ng-container>
+                  <ng-container *ngIf="item.evaStatus === 1">
+                    <button
+                      class="btn-icon btn-submit"
+                      (click)="updateStatus(item.evaId!, 2)"
+                      title="Submit"
+                    >
+                      <i class="bi bi-send"></i>
+                    </button>
+                  </ng-container>
+                  <button
+                    class="btn-icon btn-danger"
+                    (click)="deletePengajuan(item.evaId!)"
+                    title="Hapus"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="pengajuanList.length === 0">
+              <td colspan="9" class="text-center py-5 text-muted">
+                <i class="bi bi-inbox fs-1"></i>
+                <p class="mt-2">Tidak ada data pengajuan</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PAGINATION -->
+      <div
+        class="d-flex justify-content-between align-items-center mt-3"
+        *ngIf="!loading && totalPages > 0"
+      >
+        <div class="text-muted small">
+          Menampilkan {{ page * pageSize + 1 }} -
+          {{ min(page * pageSize + pageSize, totalElements) }} dari
+          {{ totalElements }} data
+        </div>
+        <div class="d-flex gap-2">
+          <button
+            class="btn-pagination"
+            (click)="onPageChange(page - 1)"
+            [disabled]="page === 0"
+          >
+            <i class="bi bi-chevron-left"></i> Prev
+          </button>
+          <span class="px-3 py-1 bg-light rounded"
+            >Halaman {{ page + 1 }} / {{ totalPages }}</span
+          >
+          <button
+            class="btn-pagination"
+            (click)="onPageChange(page + 1)"
+            [disabled]="page >= totalPages - 1"
+          >
+            Next <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETAIL PENGAJUAN -->
+<ng-template #modalDetail let-modal>
+  <div class="modal-header border-0 pb-0">
+    <h5 class="modal-title fw-bold">
+      <i class="bi bi-info-circle-fill me-2 text-info"></i>
+      Detail Pengajuan Evaluasi L3
+    </h5>
+    <button type="button" class="btn-close-custom" (click)="closeModal()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="modal-body" *ngIf="selectedPengajuan">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">ID Pengajuan</label>
+          <p class="fw-semibold mb-0">{{ selectedPengajuan.evaId || "-" }}</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Status</label>
+          <p class="fw-semibold mb-0">
+            <span [ngClass]="getStatusBadgeClass(selectedPengajuan.evaStatus)">
+              <i [class]="getStatusIcon(selectedPengajuan.evaStatus)"></i>
+              {{ getStatusFullText(selectedPengajuan.evaStatus) }}
+            </span>
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Karyawan</label>
+          <p class="fw-semibold mb-0">
+            {{ selectedPengajuan.karyawanName || "-" }}
+          </p>
+          <small class="text-muted">{{
+            selectedPengajuan.karyawanUsername
+          }}</small>
+        </div>
+      </div>
+      <!-- ✅ PERUBAHAN: Batch Pelatihan, bukan Kursus -->
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Batch Pelatihan</label>
+          <p class="fw-semibold mb-0">
+            {{ selectedPengajuan.batchNama || "-" }}
+          </p>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="info-group">
+          <label class="text-muted small">Efektifitas SEBELUM Evaluasi</label>
+          <p class="mb-0">
+            {{ selectedPengajuan.evaEfektifitasSebelum || "-" }}
+          </p>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="info-group">
+          <label class="text-muted small">Efektifitas SESUDAH Evaluasi</label>
+          <p class="mb-0">
+            {{ selectedPengajuan.evaEfektifitasSesudah || "-" }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Dibuat Pada</label>
+          <p class="fw-semibold mb-0">
+            {{
+              selectedPengajuan.evaCreatedDate
+                | date: "dd MMM yyyy HH:mm" || "-"
+            }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Dibuat Oleh</label>
+          <p class="fw-semibold mb-0">
+            {{ selectedPengajuan.evaCreatedBy || "-" }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer border-0">
+    <button class="btn-modern-outline" (click)="closeModal()">Tutup</button>
+  </div>
+</ng-template>
+
+<!-- MODAL FORM PENGAJUAN -->
+<!-- ✅ PERUBAHAN: Form menggunakan evaPlbId -->
+<ng-template #modalForm let-modal>
+  <div class="modal-header border-0 pb-0">
+    <h5 class="modal-title fw-bold">
+      <i class="bi bi-file-earmark-text me-2" style="color: #ba0403"></i>
+      {{ isEdit ? "Edit Pengajuan" : "Tambah Pengajuan" }}
+    </h5>
+    <button type="button" class="btn-close-custom" (click)="closeModal()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label fw-semibold"
+          >Karyawan ID <span class="text-danger">*</span></label
+        >
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="formPengajuan.evaKryId"
+          placeholder="Masukkan ID Karyawan"
+        />
+      </div>
+      <!-- ✅ PERUBAHAN: Batch ID (dulu Kursus ID) -->
+      <div class="col-md-6 mb-3">
+        <label class="form-label fw-semibold"
+          >Batch Pelatihan ID <span class="text-danger">*</span></label
+        >
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="formPengajuan.evaPlbId"
+          placeholder="Masukkan ID Batch Pelatihan"
+        />
+      </div>
+      <div class="col-12 mb-3">
+        <label class="form-label fw-semibold"
+          >Efektifitas SEBELUM Evaluasi
+          <span class="text-danger">*</span></label
+        >
+        <textarea
+          class="form-control"
+          rows="4"
+          [(ngModel)]="formPengajuan.evaEfektifitasSebelum"
+          placeholder="Deskripsikan efektifitas sebelum evaluasi..."
+        ></textarea>
+      </div>
+      <div class="col-12 mb-3">
+        <label class="form-label fw-semibold"
+          >Efektifitas SESUDAH Evaluasi
+          <span class="text-danger">*</span></label
+        >
+        <textarea
+          class="form-control"
+          rows="4"
+          [(ngModel)]="formPengajuan.evaEfektifitasSesudah"
+          placeholder="Deskripsikan efektifitas sesudah evaluasi..."
+        ></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer border-0">
+    <button class="btn-modern-outline" (click)="closeModal()">Batal</button>
+    <button class="btn-modern" (click)="savePengajuan()">
+      {{ isEdit ? "Update" : "Simpan" }}
+    </button>
+  </div>
+</ng-template>

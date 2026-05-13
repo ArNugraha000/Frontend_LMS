@@ -6,6 +6,7 @@ import { CookieService } from "ngx-cookie-service";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
+  styleUrls: ["./login.component.css"],
 })
 export class LoginComponent {
   email: string = "";
@@ -15,6 +16,8 @@ export class LoginComponent {
   captchaQuestion: string = "";
   captchaAnswer: string = "";
   correctAnswer: number = 0;
+
+  isLoading: boolean = false; // Untuk loading state
 
   constructor(
     private userService: UserService,
@@ -36,16 +39,21 @@ export class LoginComponent {
   }
 
   login() {
+    // Validasi CAPTCHA
     if (parseInt(this.captchaAnswer) !== this.correctAnswer) {
       alert("Captcha salah!");
       this.generateCaptcha();
+      this.captchaAnswer = "";
       return;
     }
 
+    // Validasi input
     if (!this.email || !this.password) {
-      alert("Email dan Password wajib diisi!");
+      alert("Email/Username dan Password wajib diisi!");
       return;
     }
+
+    this.isLoading = true;
 
     const payload = {
       usrName: this.email,
@@ -54,24 +62,51 @@ export class LoginComponent {
 
     this.userService.login(payload).subscribe({
       next: (res: any) => {
+        this.isLoading = false;
+
+        // Cek apakah response memiliki data (array tidak kosong)
         if (res && res.length > 0) {
           const user = res[0];
 
-          // 🔥 simpan ke cookies
-          localStorage.setItem("isLogin", "true"); // 🔥 tandain login
-          this.cookiesService.set("userId", user.usrId);
-          this.cookiesService.set("userName", user.usrName);
-          this.cookiesService.set("userRole", user.role || "User");
-          this.cookiesService.set("userImage", "assets/img/mike.jpg");
+          // 🔥 simpan ke cookies dan localStorage
+          localStorage.setItem("isLogin", "true");
+          this.cookiesService.set(
+            "userId",
+            user.usrId?.toString() || user.userId?.toString(),
+          );
+          this.cookiesService.set("userName", user.usrName || user.username);
+          this.cookiesService.set(
+            "userRole",
+            user.role || user.usrRole || "User",
+          );
+          this.cookiesService.set("userEmail", user.usrEmail || this.email);
+          this.cookiesService.set(
+            "userFullName",
+            user.usrFullName || user.usrName,
+          );
+          this.cookiesService.set(
+            "userImage",
+            user.usrImage || "assets/img/mike.jpg",
+          );
+
+          // Optional: simpan juga data lengkap user
+          localStorage.setItem("userData", JSON.stringify(user));
 
           this.router.navigateByUrl("/dashboard");
         } else {
-          alert("Username / Password salah ❌");
+          alert(
+            "Username / Password salah ❌\nPeriksa kembali username/email dan password Anda",
+          );
+          this.generateCaptcha(); // Refresh captcha setelah gagal
+          this.captchaAnswer = "";
         }
       },
       error: (err) => {
-        console.error(err);
-        alert("Error server ❌");
+        this.isLoading = false;
+        console.error("Login error:", err);
+        alert("Terjadi kesalahan pada server ❌\nSilakan coba lagi nanti");
+        this.generateCaptcha();
+        this.captchaAnswer = "";
       },
     });
   }

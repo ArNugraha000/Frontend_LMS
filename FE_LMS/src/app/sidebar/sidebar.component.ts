@@ -27,6 +27,14 @@ export const ROUTES: RouteInfo[] = [
     showInSidebar: false,
   },
   {
+    path: "/manage-training/:krsId",
+    title: "",
+    headerTitle: "Materi Pelatihan - Detail Pelatihan",
+    icon: "",
+    class: "",
+    showInSidebar: false,
+  },
+  {
     path: "/mytraining",
     title: "Pelatihan, Saya",
     icon: "nc-book-bookmark",
@@ -101,6 +109,27 @@ export const ROUTES: RouteInfo[] = [
     class: "active-pro",
     showInSidebar: false,
   },
+  {
+    path: "/karyawan",
+    title: "Data Karyawan",
+    icon: "nc-settings",
+    class: "",
+    showInSidebar: false,
+  },
+  {
+    path: "/jabatan",
+    title: "Data Jabatan",
+    icon: "nc-settings",
+    class: "",
+    showInSidebar: false,
+  },
+  {
+    path: "/penjadwalan/:plbId/:krsId",
+    title: "Penjadwalan Materi",
+    icon: "nc-settings",
+    class: "",
+    showInSidebar: false,
+  },
 
   // { path: "/maps", title: "Maps", icon: "nc-pin-3", class: "" },
   // {
@@ -143,9 +172,19 @@ export class SidebarComponent implements OnInit {
         currentUrl.startsWith("/materi") ||
         currentUrl.startsWith("/quiz-list") ||
         currentUrl.startsWith("/quiz-soal") ||
-        currentUrl.startsWith("/manage-training")
+        currentUrl.startsWith("/manage-training") ||
+        currentUrl.startsWith("/penjadwalan")
       );
     }
+
+    if (path === "/configuration") {
+      return (
+        currentUrl.startsWith("/karyawan") ||
+        currentUrl.startsWith("/configuration") ||
+        currentUrl.startsWith("/jabatan")
+      );
+    }
+
     return currentUrl.startsWith(path);
   }
 }

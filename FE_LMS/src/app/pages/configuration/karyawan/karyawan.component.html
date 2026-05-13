@@ -1,0 +1,527 @@
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-white py-3">
+      <h4 class="mb-0 fw-bold">
+        <i class="bi bi-people-fill me-2" style="color: #ba0403"></i>
+        Manajemen Karyawan
+      </h4>
+    </div>
+    <div class="card-body">
+      <!-- TOOLBAR -->
+      <div
+        class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2"
+      >
+        <button class="btn-modern" (click)="openCreateModal()">
+          <i class="bi bi-plus-lg"></i> Tambah Karyawan
+        </button>
+        <div style="width: 320px">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"
+              ><i class="bi bi-search"></i
+            ></span>
+            <input
+              type="text"
+              class="form-control border-start-0 ps-0"
+              placeholder="Cari username, nama, atau email..."
+              [(ngModel)]="searchKeyword"
+              (keyup)="onSearchKeyUp()"
+              (keyup.enter)="onSearchEnter()"
+            />
+            <button
+              *ngIf="searchKeyword"
+              class="btn btn-clear"
+              (click)="clearSearch()"
+            >
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+        </div>
+        <select
+          class="form-select"
+          style="width: 100px"
+          [(ngModel)]="pageSize"
+          (change)="onPageSizeChange()"
+        >
+          <option *ngFor="let opt of pageSizeOptions" [value]="opt">
+            {{ opt }} Baris
+          </option>
+        </select>
+      </div>
+
+      <!-- LOADING -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border" role="status" style="color: #ba0403">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-wrapper" *ngIf="!loading">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th
+                style="width: 50px"
+                (click)="onSort('kryId')"
+                class="sortable"
+              >
+                No <i [class]="'bi ' + getSortIcon('kryId')"></i>
+              </th>
+              <th (click)="onSort('kryUsername')" class="sortable">
+                Username <i [class]="'bi ' + getSortIcon('kryUsername')"></i>
+              </th>
+              <th (click)="onSort('kryNamaDpn')" class="sortable">
+                Nama Lengkap <i [class]="'bi ' + getSortIcon('kryNamaDpn')"></i>
+              </th>
+              <th (click)="onSort('kryEmail')" class="sortable">
+                Email <i [class]="'bi ' + getSortIcon('kryEmail')"></i>
+              </th>
+              <th>Divisi</th>
+              <th>Jabatan</th>
+              <th (click)="onSort('kryStatus')" class="sortable">
+                Status <i [class]="'bi ' + getSortIcon('kryStatus')"></i>
+              </th>
+              <th style="width: 120px">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of karyawanList; let i = index">
+              <td>{{ page * pageSize + i + 1 }}</td>
+              <td class="fw-semibold">{{ item.kryUsername }}</td>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <div
+                    class="avatar-placeholder"
+                    [style.backgroundColor]="getAvatarColor(item.kryUsername)"
+                  >
+                    {{
+                      (item.kryNamaDpn?.charAt(0) || "") +
+                        (item.kryNamaBkg?.charAt(0) || "")
+                    }}
+                  </div>
+                  {{ item.kryNamaDpn }} {{ item.kryNamaBkg }}
+                </div>
+              </td>
+              <td>{{ item.kryEmail }}</td>
+              <td>
+                <span class="badge bg-secondary bg-opacity-10 text-secondary">{{
+                  getDivisiNama(item.kryDivisi)
+                }}</span>
+              </td>
+              <td>
+                <span class="badge bg-secondary bg-opacity-10 text-secondary">{{
+                  getJabatanNama(item.kryJabatan)
+                }}</span>
+              </td>
+              <td>
+                <span [ngClass]="getStatusBadgeClass(item.kryStatus)">{{
+                  getStatusText(item.kryStatus)
+                }}</span>
+              </td>
+              <td>
+                <div class="action-container">
+                  <button
+                    class="btn-icon"
+                    (click)="openDetailModal(item)"
+                    title="Detail"
+                  >
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button
+                    class="btn-icon"
+                    (click)="openEditModal(item)"
+                    title="Edit"
+                  >
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <label class="switch" title="Toggle Status">
+                    <input
+                      type="checkbox"
+                      [checked]="item.kryStatus === '0'"
+                      (change)="confirmToggleStatus($event, item)"
+                    />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="karyawanList.length === 0">
+              <td colspan="8" class="text-center py-5 text-muted">
+                <i class="bi bi-inbox fs-1"></i>
+                <p class="mt-2">Tidak ada data karyawan</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PAGINATION -->
+      <div
+        class="d-flex justify-content-between align-items-center mt-3"
+        *ngIf="!loading && totalPages > 0"
+      >
+        <div class="text-muted small">
+          Menampilkan {{ page * pageSize + 1 }} -
+          {{ min(page * pageSize + pageSize, totalElements) }} dari
+          {{ totalElements }} data
+        </div>
+        <div class="d-flex gap-2">
+          <button
+            class="btn-pagination"
+            (click)="onPageChange(page - 1)"
+            [disabled]="page === 0"
+          >
+            <i class="bi bi-chevron-left"></i> Prev
+          </button>
+          <span class="px-3 py-1 bg-light rounded"
+            >Halaman {{ page + 1 }} / {{ totalPages }}</span
+          >
+          <button
+            class="btn-pagination"
+            (click)="onPageChange(page + 1)"
+            [disabled]="page >= totalPages - 1"
+          >
+            Next <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FORM KARYAWAN -->
+<ng-template #modalKaryawan let-modal>
+  <div class="modal-header border-0 pb-0">
+    <h5 class="modal-title fw-bold">
+      <i class="bi bi-person-badge me-2 text-primary"></i
+      >{{ isEdit ? "Edit Karyawan" : "Tambah Karyawan" }}
+    </h5>
+    <button type="button" class="btn-close-custom" (click)="closeModal()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+  <div class="modal-body pt-2">
+    <form #karyawanForm="ngForm">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold"
+            >Username <span class="text-danger">*</span></label
+          >
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="formKaryawan.kryUsername"
+            name="username"
+            required
+          />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold"
+            >Password <span class="text-danger" *ngIf="!isEdit">*</span
+            ><span class="text-muted small" *ngIf="isEdit"
+              >(Kosongkan jika tidak diubah)</span
+            ></label
+          >
+          <input
+            type="password"
+            class="form-control"
+            [(ngModel)]="formKaryawan.kryPassword"
+            name="password"
+            [required]="!isEdit"
+          />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold"
+            >Nama Depan <span class="text-danger">*</span></label
+          >
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="formKaryawan.kryNamaDpn"
+            name="namaDpn"
+            required
+          />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold">Nama Belakang</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="formKaryawan.kryNamaBkg"
+            name="namaBkg"
+          />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold"
+            >Email <span class="text-danger">*</span></label
+          >
+          <input
+            type="email"
+            class="form-control"
+            [(ngModel)]="formKaryawan.kryEmail"
+            name="email"
+            required
+            email
+          />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-semibold">Tanggal Lahir</label>
+          <input
+            type="date"
+            class="form-control"
+            [(ngModel)]="formKaryawan.kryTglLahir"
+            name="tglLahir"
+          />
+        </div>
+
+        <!-- DROPDOWN DIVISI -->
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-semibold">Divisi</label>
+          <select
+            class="form-select"
+            [(ngModel)]="formKaryawan.kryDivisi"
+            name="divisi"
+            (change)="onDivisiChange($event)"
+          >
+            <option value="">Pilih Data Divisi</option>
+            <option *ngFor="let item of divisiList" [value]="item.divJudul">
+              {{ item.divNama }}
+            </option>
+          </select>
+        </div>
+
+        <!-- DROPDOWN DEPARTEMEN -->
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-semibold">Departemen</label>
+          <select
+            class="form-select"
+            [(ngModel)]="formKaryawan.kryDep"
+            name="departemen"
+            (change)="onDepartemenChange($event)"
+          >
+            <option value="">Pilih Data Departemen</option>
+            <option
+              *ngFor="let item of filteredDepartemen"
+              [value]="item.depJudul"
+            >
+              {{ item.depNama }}
+            </option>
+          </select>
+          <small
+            class="text-muted"
+            *ngIf="formKaryawan.kryDivisi && filteredDepartemen.length === 0"
+            >Tidak ada departemen untuk divisi ini</small
+          >
+        </div>
+
+        <!-- DROPDOWN SEKSI -->
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-semibold">Seksi</label>
+          <br />
+          <select
+            class="form-select"
+            [(ngModel)]="formKaryawan.krySesi"
+            name="seksi"
+          >
+            <option value="">Pilih Data Seksi...</option>
+            <option *ngFor="let item of filteredSeksi" [value]="item.sekJudul">
+              {{ item.sekNama }}
+            </option>
+          </select>
+          <small
+            class="text-muted"
+            *ngIf="formKaryawan.kryDep && filteredSeksi.length === 0"
+            >Tidak ada seksi untuk departemen ini</small
+          >
+        </div>
+
+        <!-- DROPDOWN JABATAN -->
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-semibold">Jabatan</label>
+          <select
+            class="form-select"
+            [(ngModel)]="formKaryawan.kryJabatan"
+            name="jabatan"
+          >
+            <option value="">-- Pilih Jabatan --</option>
+            <option *ngFor="let item of jabatanList" [value]="item.jbnKode">
+              {{ item.jbnNama }}
+            </option>
+          </select>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-semibold">Golongan</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="formKaryawan.kryGol"
+            name="golongan"
+          />
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-semibold">URL Profil</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="formKaryawan.kryProfil"
+            name="profil"
+            placeholder="Foto profil"
+          />
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer border-0 pt-0">
+    <button class="btn-modern-outline" (click)="closeModal()">Batal</button>
+    <button
+      class="btn-modern"
+      (click)="saveKaryawan()"
+      [disabled]="!karyawanForm.valid && karyawanForm.submitted"
+    >
+      {{ isEdit ? "Update" : "Simpan" }}
+    </button>
+  </div>
+</ng-template>
+
+<!-- MODAL DETAIL KARYAWAN -->
+<ng-template #modalDetail let-modal>
+  <div class="modal-header border-0 pb-0">
+    <h5 class="modal-title fw-bold">
+      <i class="bi bi-info-circle-fill me-2 text-info"></i>Detail Karyawan
+    </h5>
+    <button type="button" class="btn-close-custom" (click)="closeModal()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+  <div class="modal-body" *ngIf="selectedKaryawan">
+    <div class="text-center mb-4">
+      <div
+        class="avatar-large mx-auto mb-3"
+        [style.backgroundColor]="getAvatarColor(selectedKaryawan.kryUsername)"
+      >
+        {{
+          (selectedKaryawan.kryNamaDpn?.charAt(0) || "") +
+            (selectedKaryawan.kryNamaBkg?.charAt(0) || "")
+        }}
+      </div>
+      <h5 class="mb-0">
+        {{ selectedKaryawan.kryNamaDpn }} {{ selectedKaryawan.kryNamaBkg }}
+      </h5>
+      <span
+        [ngClass]="getStatusBadgeClass(selectedKaryawan.kryStatus)"
+        class="mt-2 d-inline-block"
+        >{{ getStatusText(selectedKaryawan.kryStatus) }}</span
+      >
+    </div>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Username</label>
+          <p class="fw-semibold mb-0">
+            {{ selectedKaryawan.kryUsername || "-" }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Email</label>
+          <p class="fw-semibold mb-0">{{ selectedKaryawan.kryEmail || "-" }}</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Tanggal Lahir</label>
+          <p class="fw-semibold mb-0">
+            {{ selectedKaryawan.kryTglLahir | date: "dd MMM yyyy" || "-" }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Jabatan</label>
+          <p class="fw-semibold mb-0">
+            {{ getJabatanNama(selectedKaryawan.kryJabatan) }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="info-group">
+          <label class="text-muted small">Divisi</label>
+          <p class="fw-semibold mb-0">
+            {{ getDivisiNama(selectedKaryawan.kryDivisi) }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="info-group">
+          <label class="text-muted small">Departemen</label>
+          <p class="fw-semibold mb-0">
+            {{ getDepartemenNama(selectedKaryawan.kryDep) }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="info-group">
+          <label class="text-muted small">Seksi</label>
+          <p class="fw-semibold mb-0">
+            {{ getSeksiNama(selectedKaryawan.krySesi) }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Golongan</label>
+          <p class="fw-semibold mb-0">{{ selectedKaryawan.kryGol || "-" }}</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="info-group">
+          <label class="text-muted small">Dibuat Pada</label>
+          <p class="fw-semibold mb-0">
+            {{
+              selectedKaryawan.kryCreatedDate | date: "dd MMM yyyy HH:mm" || "-"
+            }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer border-0">
+    <button class="btn-modern-outline" (click)="closeModal()">Tutup</button>
+  </div>
+</ng-template>
+
+<!-- MODAL KONFIRMASI TOGGLE STATUS -->
+<div class="modal-overlay" *ngIf="showToggleModal">
+  <div class="modal-container" style="max-width: 450px">
+    <div class="modal-header">
+      <h3><i class="bi bi-exclamation-circle-fill"></i> Konfirmasi Status</h3>
+      <span class="modal-close" (click)="closeToggleModal()">&times;</span>
+    </div>
+    <div class="modal-body-landscape" style="text-align: center">
+      <i
+        class="bi bi-toggle-on"
+        style="
+          font-size: 64px;
+          color: #ba0403;
+          margin-bottom: 16px;
+          display: block;
+        "
+      ></i>
+      <p style="font-size: 16px; font-weight: 500; margin-bottom: 8px">
+        Ubah Status Karyawan?
+      </p>
+      <p class="text-muted" style="font-size: 13px; color: #64748b">
+        "{{ toggleItem?.kryNamaDpn }} {{ toggleItem?.kryNamaBkg }}" akan menjadi
+        <strong>{{ toggleNewStatus === "0" ? "AKTIF" : "NONAKTIF" }}</strong>
+      </p>
+    </div>
+    <div class="modal-footer" style="justify-content: center">
+      <button class="btn-batal" (click)="closeToggleModal()">Batal</button>
+      <button class="btn-simpan" (click)="confirmToggleAction()">
+        <i class="bi bi-check-lg"></i> Ya, Ubah
+      </button>
+    </div>
+  </div>
+</div>

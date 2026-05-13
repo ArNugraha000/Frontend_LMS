@@ -22,6 +22,10 @@ import { MateriComponent } from "../../pages/materi/materi.component";
 import { QuizSoalFormComponent } from "../../pages/materi/quiz-soal-form/quiz-soal-form.component";
 import { QuizSoalListComponent } from "../../pages/materi/quiz-soal/quiz-soal-list.component";
 import { ManageTrainingComponent } from "../../pages/managetraining/manage-training.component";
+import { DetailManageTraining } from "../../pages/managetraining/detailmanagetraining/detailmanagetraining.component";
+import { KaryawanComponent } from "../../pages/configuration/karyawan/karyawan.component";
+import { JabatanComponent } from "../../pages/configuration/jabatan/jabatan.component";
+import { TrainingJadwalmateriComponent } from "../../pages/Training/TrainingJadwalMateri/training-jadwal-materi.component";
 
 export const AdminLayoutRoutes: Routes = [
   { path: "dashboard", component: DashboardComponent },
@@ -47,4 +51,20 @@ export const AdminLayoutRoutes: Routes = [
   { path: "quiz-soal/:materiId", component: QuizSoalFormComponent },
   { path: "quiz-soal/:materiId/:soalId", component: QuizSoalFormComponent },
   { path: "manage-training", component: ManageTrainingComponent },
+  {
+    path: "manage-training/:krsId",
+    component: DetailManageTraining,
+  },
+  {
+    path: "karyawan",
+    component: KaryawanComponent,
+  },
+  {
+    path: "jabatan",
+    component: JabatanComponent,
+  },
+  {
+    path: "penjadwalan/:plbId/:krsId",
+    component: TrainingJadwalmateriComponent,
+  },
 ];

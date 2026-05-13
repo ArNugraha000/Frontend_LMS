@@ -5,9 +5,7 @@
       <span class="menu-sub">Profil Saya</span>
       <span class="menu-title">Profil</span>
     </div>
-    <div class="menu-icon blue">
-      <i class="bi bi-person"></i>
-    </div>
+    <div class="menu-icon blue"><i class="bi bi-person"></i></div>
   </div>
 
   <div class="menu-card" (click)="goTo('beranda')">
@@ -15,9 +13,7 @@
       <span class="menu-sub">Beranda</span>
       <span class="menu-title">Beranda</span>
     </div>
-    <div class="menu-icon red">
-      <i class="bi bi-grid"></i>
-    </div>
+    <div class="menu-icon red"><i class="bi bi-grid"></i></div>
   </div>
 
   <div class="menu-card" (click)="goTo('materi')">
@@ -25,9 +21,7 @@
       <span class="menu-sub">1. Kelola Materi</span>
       <span class="menu-title">Materi</span>
     </div>
-    <div class="menu-icon red">
-      <i class="bi bi-folder2-open"></i>
-    </div>
+    <div class="menu-icon red"><i class="bi bi-folder2-open"></i></div>
   </div>
 
   <div class="menu-card" (click)="goTo('pelatihan')">
@@ -35,9 +29,7 @@
       <span class="menu-sub">2. Kelola Pelatihan</span>
       <span class="menu-title">Pelatihan</span>
     </div>
-    <div class="menu-icon red">
-      <i class="bi bi-folder2-open"></i>
-    </div>
+    <div class="menu-icon red"><i class="bi bi-folder2-open"></i></div>
   </div>
 </div>
 
@@ -57,58 +49,86 @@
     <div class="course-card" *ngFor="let item of pagedData">
       <!-- LEFT -->
       <div class="course-left">
-        <!-- GAMBAR -->
+        <!-- GAMBAR (dari MS_KURSUS via JOIN) -->
         <div class="course-image">
           <img
-            [src]="
-              item.krsGambarUrl ||
-              item.krsGambar ||
-              'assets/img/default-course.jpg'
-            "
-            alt="gambar"
+            [src]="item.kursusGambarUrl || 'assets/img/default-course.jpg'"
+            [alt]="item.kursusNama || item.plbNamaBatch"
+            (error)="item.kursusGambarUrl = 'assets/img/default-course.jpg'"
           />
         </div>
 
         <!-- CONTENT -->
         <div class="course-content">
-          <div class="course-title">{{ item.krsNama }}</div>
+          <!-- ✅ Nama Batch -->
+          <div class="course-title">{{ item.plbNamaBatch }}</div>
 
+          <!-- ✅ Nama Kursus (dari JOIN) -->
+          <div
+            class="course-subtitle"
+            style="font-size: 12px; color: #666; margin-bottom: 8px"
+          >
+            Kursus: {{ item.kursusNama || "-" }}
+          </div>
+
+          <!-- ✅ Status Batch (AKTIF/NONAKTIF) -->
           <span
             class="badge"
             [ngClass]="
-              item.krsStatus === 2 ? 'badge-success' : 'badge-secondary'
+              item.plbStatus === 0 ? 'badge-success' : 'badge-secondary'
             "
           >
-            {{ item.krsStatus === 2 ? "Sudah Terbit" : "Belum Terbit" }}
+            {{ item.plbStatus === 0 ? "AKTIF" : "NONAKTIF" }}
           </span>
 
-          <div class="course-duration">
-            Durasi Training: {{ item.krsDurasi || "-" }} Hari
+          <!-- ✅ Informasi Tambahan -->
+          <!-- <div class="course-duration">Batch ID: {{ item.plbId }}</div> -->
+
+          <div class="course-duration" *ngIf="item.plbTanggalMulai">
+            📅 {{ item.plbTanggalMulai | date: "dd MMM yyyy" }} -
+            {{ item.plbTanggalSelesai | date: "dd MMM yyyy" }}
           </div>
 
-          <!-- PINDAHIN KE SINI -->
+          <!-- ✅ Jenis (bisa dari kursus atau default) -->
           <span class="badge badge-online">
-            {{ item.krsJenis }}
+            {{ item.kursusJenis || "Batch Training" }}
           </span>
         </div>
       </div>
 
-      <!-- RIGHT -->
+      <!-- RIGHT - ACTION BUTTONS -->
       <div class="course-actions-right">
-        <button class="btn-icon" (click)="isiKehadiran(item)">
+        <button
+          class="btn-icon"
+          (click)="isiKehadiran(item)"
+          title="Daftar Lanjutan Pelatihan"
+        >
           <i class="bi bi-person-check-fill"></i>
         </button>
 
-        <button class="btn-icon" (click)="lihatRiwayat(item)">
+        <button
+          class="btn-icon"
+          (click)="lihatRiwayat(item)"
+          title="Kelola Riwayat Pelatihan"
+        >
           <i class="bi bi-clock-history"></i>
         </button>
 
         <button
           class="btn-icon"
-          (click)="deleteKursus(item.krsId, item.krsNama)"
+          (click)="detailBatch(item)"
+          title="Detail Batch Pelatihan (Jadwal Materi)"
+        >
+          <i class="bi bi-calendar-event"></i>
+        </button>
+
+        <!-- <button
+          class="btn-icon"
+          (click)="deleteBatch(item.plbId!, item.plbNamaBatch)"
+          title="Hapus Batch"
         >
           <i class="bi bi-trash"></i>
-        </button>
+        </button> -->
       </div>
     </div>
   </div>
@@ -116,7 +136,7 @@
   <!-- EMPTY STATE -->
   <div *ngIf="pagedData.length === 0" class="empty-state">
     <i class="bi bi-inbox"></i>
-    <p>Tidak ada data pelatihan</p>
+    <p>Tidak ada data batch pelatihan</p>
   </div>
 
   <div class="pagination-wrapper">
@@ -138,7 +158,7 @@
       >
         PREV
       </button>
-      <span class="page-info"> {{ currentPage }} / {{ totalPages }} </span>
+      <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
       <button
         class="btn-page"
         (click)="nextPage()"
@@ -150,7 +170,7 @@
   </div>
 </div>
 
-<!-- ================= MODAL KONFIRMASI HAPUS ================= -->
+<!-- MODAL KONFIRMASI HAPUS -->
 <div class="modal-overlay" *ngIf="showDeleteModal">
   <div class="modal-container" style="max-width: 450px">
     <div class="modal-header">
@@ -168,11 +188,11 @@
         "
       ></i>
       <p style="font-size: 16px; font-weight: 500; margin-bottom: 8px">
-        Yakin ingin menghapus pelatihan ini?
+        Yakin ingin menghapus batch pelatihan ini?
       </p>
       <p class="text-muted" style="font-size: 13px; color: #64748b">
-        Pelatihan "<strong>{{ deleteItemName }}</strong
-        >" akan dipindahkan ke tempat sampah.
+        Batch "<strong>{{ deleteItemName }}</strong
+        >" akan dihapus secara permanen.
       </p>
       <p class="text-muted" style="font-size: 12px; color: #999">
         Data yang dihapus tidak dapat dikembalikan!
